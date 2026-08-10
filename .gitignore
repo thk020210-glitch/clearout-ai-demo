@@ -1,0 +1,8 @@
+# Operating-system generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local editor settings
+.vscode/
+.idea/

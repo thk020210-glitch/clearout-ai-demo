@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Yamaha F310 · 报价明细 · 闲鱼</title>
+<style>
+:root{
+  --xy-orange:#FF4B10;
+  --xy-orange-deep:#DE3900;
+  --xy-orange-soft:#FFF0EA;
+  --xy-gold:#FFC300;
+  --xy-gold-soft:#FFF7DE;
+  --xy-ink:#1B1B1D;
+  --xy-ink-soft:#63636B;
+  --xy-ink-faint:#A2A2AA;
+  --xy-bg:#F4F3F1;
+  --xy-card:#FFFFFF;
+  --xy-line:#ECEBE8;
+  --xy-green:#0EA972;
+  --xy-green-bg:#E7F8F1;
+  --xy-red:#FF3B30;
+  --xy-red-bg:#FFECEA;
+  --xy-warn-bg:#FFF7E8;
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:10px;
+  --shadow:0 1px 2px rgba(20,15,10,.04), 0 10px 26px -14px rgba(20,15,10,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+  background:var(--xy-bg);
+  color:var(--xy-ink);
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+}
+.device{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  background:var(--xy-bg);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
+.statusbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 22px 4px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--xy-ink);
+  letter-spacing:.2px;
+}
+.statusbar .icons{display:flex;align-items:center;gap:5px;}
+.navbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 16px 12px;
+  position:sticky;
+  top:0;
+  background:var(--xy-bg);
+  z-index:20;
+}
+.navbar .side{width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.navbar .side svg{display:block;}
+.navbar h1{font-size:17px;font-weight:700;margin:0;letter-spacing:.2px;}
+.navbar .side.tap{cursor:pointer;border-radius:50%;background:rgba(0,0,0,.04);}
+.navbar .side.tap:active{background:rgba(0,0,0,.09);}
+
+.scroll{flex:1;overflow-y:auto;padding-bottom:110px;}
+.px{padding-left:16px;padding-right:16px;}
+
+.card{
+  background:var(--xy-card);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow);
+  padding:18px;
+}
+.section-title{
+  font-size:13px;
+  font-weight:700;
+  color:var(--xy-ink-soft);
+  letter-spacing:.5px;
+  margin:22px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.tag{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 9px;
+  border-radius:100px;
+  font-size:11.5px;
+  font-weight:600;
+  background:var(--xy-orange-soft);
+  color:var(--xy-orange-deep);
+}
+.tag.gold{background:var(--xy-gold-soft);color:#8a6400;}
+.tag.gray{background:#F0EFEC;color:var(--xy-ink-soft);}
+.tag.green{background:var(--xy-green-bg);color:var(--xy-green);}
+
+.btn{
+  border:none;
+  border-radius:100px;
+  font-size:15px;
+  font-weight:700;
+  padding:14px 20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:transform .15s ease, opacity .15s ease;
+  font-family:inherit;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--xy-orange),var(--xy-orange-deep));color:#fff;box-shadow:0 10px 20px -10px rgba(255,75,16,.6);}
+.btn-secondary{background:var(--xy-card);color:var(--xy-ink);border:1.5px solid var(--xy-line);}
+.btn-ghost{background:transparent;color:var(--xy-ink-soft);border:1.5px solid var(--xy-line);}
+.btn-block{width:100%;}
+.btn-sm{padding:9px 14px;font-size:13px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+.bottombar{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  display:flex;
+  justify-content:center;
+}
+.bottombar-inner{
+  width:100%;max-width:430px;
+  padding:10px 16px calc(18px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg, rgba(244,243,241,0) 0%, var(--xy-bg) 30%);
+  display:flex;gap:10px;
+}
+
+.explain{
+  background:var(--xy-warn-bg);
+  border-radius:var(--r-md);
+  padding:14px 16px;
+  font-size:13.5px;
+  line-height:1.65;
+  color:#7A5B00;
+  border:1px solid #FBE7A8;
+}
+.explain b{color:#5b4200;}
+
+.field-label{font-size:13px;color:var(--xy-ink-soft);font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;}
+.field-label .val{color:var(--xy-orange-deep);font-weight:800;font-size:14px;}
+
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:4px;border-radius:4px;
+  background:var(--xy-line);outline:none;margin:6px 0 2px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:3px solid var(--xy-orange);box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer;
+}
+.seg{display:flex;background:#F0EFEC;border-radius:100px;padding:4px;gap:4px;}
+.seg button{
+  flex:1;border:none;background:transparent;padding:9px 4px;border-radius:100px;
+  font-size:13px;font-weight:700;color:var(--xy-ink-soft);cursor:pointer;font-family:inherit;transition:all .18s ease;
+}
+.seg button.active{background:var(--xy-ink);color:#fff;}
+
+.toggle{width:46px;height:27px;border-radius:100px;background:var(--xy-line);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--xy-orange);}
+.toggle .knob{position:absolute;top:2.5px;left:2.5px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s;}
+.toggle.on .knob{left:21.5px;}
+
+.divider{height:1px;background:var(--xy-line);margin:14px 0;}
+
+.hero-price{font-size:44px;font-weight:800;letter-spacing:-1px;color:var(--xy-ink);}
+.hero-price .cny{font-size:22px;font-weight:700;margin-right:2px;color:var(--xy-orange-deep);}
+
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+
+.toast{
+  position:fixed;left:50%;bottom:110px;transform:translateX(-50%);
+  background:rgba(27,27,29,.92);color:#fff;padding:11px 18px;border-radius:100px;
+  font-size:13.5px;font-weight:600;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s, bottom .25s;
+  white-space:nowrap;
+}
+.toast.show{opacity:1;bottom:130px;}
+
+.item-card{
+  background:var(--xy-card);border-radius:var(--r-md);padding:12px;display:flex;gap:12px;
+  box-shadow:var(--shadow);margin-bottom:12px;align-items:center;cursor:pointer;transition:transform .15s;
+}
+.item-card:active{transform:scale(.98);}
+.item-card.disabled{cursor:default;}
+.item-card.disabled:active{transform:none;}
+.item-thumb{
+  width:64px;height:64px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:var(--xy-bg);
+}
+.item-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.offer-context{padding:14px 16px 16px;}
+.offer-context-item{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.offer-context-item .item-thumb{width:48px;height:48px;border-radius:10px;}
+.offer-context-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.offer-context-meta{font-size:11.5px;color:var(--xy-ink-soft);margin-top:4px;}
+.offer-context-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:12px;border-top:1px solid var(--xy-line);}
+.offer-context-metric:nth-child(2){text-align:center;}
+.offer-context-metric:nth-child(3){text-align:right;}
+.badge-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;z-index:30;
+}
+.tabbar-inner{
+  width:100%;max-width:430px;display:flex;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);
+  border-top:1px solid var(--xy-line);
+  padding:8px 6px calc(6px + env(safe-area-inset-bottom));
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:5px 2px;border-radius:12px;cursor:pointer;color:var(--xy-ink-faint);
+}
+.tab.active{color:var(--xy-orange-deep);}
+.tab span{font-size:10.5px;font-weight:700;}
+
+::-webkit-scrollbar{display:none;}
+a{text-decoration:none;color:inherit;}
+
+</style>
+</head>
+<body>
+<div class="device">
+<div class="statusbar">
+  <span>9:41</span>
+  <span class="icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="#1B1B1D"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#1B1B1D"/><rect x="10" y="3" width="3" height="9" rx="0.5" fill="#1B1B1D"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#1B1B1D"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4C4.5 0.5 11.5 0.5 15 4" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><path d="M3.5 6.8C6 4.3 10 4.3 12.5 6.8" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="10" r="1.4" fill="#1B1B1D"/></svg>
+    <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#1B1B1D"/><rect x="2" y="2" width="15" height="8" rx="1.2" fill="#1B1B1D"/><rect x="21.5" y="4" width="1.8" height="4" rx="0.8" fill="#1B1B1D"/></svg>
+  </span>
+</div>
+<div class="navbar">
+  <div class="side tap" onclick="returnFromOffer()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="#1B1B1D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h1>Yamaha F310 · 报价明细</h1>
+  <div class="side"></div>
+</div>
+
+<div class="scroll px">
+
+  <div class="card offer-context">
+    <div class="offer-context-item">
+      <div class="item-thumb"><img src="assets/yamaha-f310.png" alt="Yamaha F310 民谣吉他"></div>
+      <div style="min-width:0;flex:1;"><div class="offer-context-name">Yamaha F310 民谣吉他</div><div class="offer-context-meta">在售中 · 平衡出售 · 上海同城自提</div></div>
+      <span class="tag green">计划运行中</span>
+    </div>
+    <div class="offer-context-metrics">
+    <div class="offer-context-metric">
+      <div style="font-size:12px;color:var(--xy-ink-soft);font-weight:600;">当前公开价 P(t)</div>
+      <div style="font-size:24px;font-weight:800;color:var(--xy-orange-deep);margin-top:3px;">¥<span id="ctxP">688</span></div>
+    </div>
+    <div class="offer-context-metric">
+      <div style="font-size:12px;color:var(--xy-ink-soft);font-weight:600;">保护底价 F</div>
+      <div style="font-size:24px;font-weight:800;margin-top:3px;">¥<span id="ctxF">450</span></div>
+    </div>
+    <div class="offer-context-metric">
+      <div style="font-size:12px;color:var(--xy-ink-soft);font-weight:600;">剩余天数</div>
+      <div style="font-size:24px;font-weight:800;margin-top:3px;"><span id="ctxR">14</span></div>
+    </div>
+    </div>
+  </div>
+  <div style="font-size:11px;color:var(--xy-ink-faint);margin-top:6px;line-height:1.6;">买家仅可见公开价与自提截止日；不可见底价、曲线与降价节点</div>
+
+  <div class="section-title">买家提交结构化报价</div>
+  <div class="card">
+    <div class="field-label"><span>报价金额</span></div>
+    <div style="display:flex;align-items:center;background:var(--xy-bg);border-radius:var(--r-sm);padding:4px 12px;">
+      <span style="font-size:20px;font-weight:800;color:var(--xy-orange-deep);margin-right:4px;">¥</span>
+      <input type="number" id="offerAmount" value="430" style="border:none;background:transparent;font-size:20px;font-weight:800;flex:1;outline:none;font-family:inherit;color:var(--xy-ink);">
+    </div>
+
+    <div class="field-label" style="margin-top:14px;"><span>可自提时间</span></div>
+    <select id="pickupTime" style="width:100%;padding:12px;border-radius:var(--r-sm);border:1.5px solid var(--xy-line);font-size:14px;font-family:inherit;background:var(--xy-card);color:var(--xy-ink);">
+      <option>今天 19:00–21:00</option>
+      <option>明天 19:00–21:00</option>
+      <option>本周六下午</option>
+      <option>需另约时间</option>
+    </select>
+
+    <div class="field-label" style="margin-top:14px;"><span>备注（可选）</span></div>
+    <textarea id="offerNote" placeholder="例如：能否包个快递 / 能否换成音箱…" style="width:100%;min-height:52px;padding:12px;border-radius:var(--r-sm);border:1.5px solid var(--xy-line);font-size:13.5px;font-family:inherit;resize:vertical;"></textarea>
+    <div style="font-size:11px;color:var(--xy-ink-faint);margin-top:5px;">含特殊条件的备注不进入自动规则，将直接转交给你</div>
+
+    <button class="btn btn-primary btn-block" style="margin-top:16px;" onclick="submitOffer()">提交报价</button>
+
+    <div class="section-title" style="margin:16px 0 8px;font-size:12px;">演示报价（来自 PRD §8.2 默认场景）</div>
+    <div class="chip-row">
+      <button class="btn btn-ghost btn-sm" onclick="quickOffer(350)">¥350 · 自动拒绝</button>
+      <button class="btn btn-ghost btn-sm" onclick="quickOffer(430)">¥430 · AI 还价</button>
+      <button class="btn btn-ghost btn-sm" onclick="quickOffer(560)">¥560 · 有效报价</button>
+      <button class="btn btn-ghost btn-sm" onclick="quickOfferAtPrice()">当前价 · 优先确认</button>
+    </div>
+  </div>
+
+  <div id="resultZone"></div>
+
+  <div class="section-title">处理记录</div>
+  <div id="logZone" style="font-size:13px;color:var(--xy-ink-faint);">暂无报价记录，试试上面的演示报价</div>
+
+  <div style="height:10px;"></div>
+</div>
+
+<div class="tabbar"><div class="tabbar-inner">
+  <div class="tab" onclick="location.href='dashboard.html'">
+    <svg width="21" height="21" viewBox="0 0 24 24"><path d="M4 11.5L12 4l8 7.5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>计划概览</span>
+  </div>
+  <div class="tab" onclick="location.href='task-inbox.html'">
+    <svg width="21" height="21" viewBox="0 0 24 24"><path d="M3 12h4l2 3h6l2-3h4" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l1.5-6.5A1 1 0 0 1 7.47 4h9.06a1 1 0 0 1 .97 1.5L19 12v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-6z" stroke="currentColor" fill="none" stroke-width="2" stroke-linejoin="round"/></svg>
+    <span>交易任务</span>
+  </div>
+  <div class="tab" onclick="location.href='results.html'">
+    <svg width="21" height="21" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" fill="none" stroke-width="2"/><path d="M8.5 12.5l2.5 2.5 4.5-5" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>计划结果</span>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+</div>
+<script>
+// ===== UI helper: toast =====
+let __toastTimer=null;
+function showToast(msg, ms){
+  const el = document.getElementById('toast');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(__toastTimer);
+  __toastTimer = setTimeout(()=>el.classList.remove('show'), ms||2200);
+}
+
+// ===== 闲鱼 · AI 自主清售计划 —— PRD v3.0 公式实现 =====
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+function roundToTen(v){ return Math.round(v/10)*10; }
+
+const STRATEGY = {
+  profit: { label:'收益优先', a_s:0.50, k_s:0.25, kappa_s:0.10, gamma_adj:0.08 },
+  balance:{ label:'平衡出售', a_s:0.20, k_s:0,    kappa_s:0.25, gamma_adj:0    },
+  fast:   { label:'尽快售出', a_s:-0.10,k_s:-0.25, kappa_s:0.35, gamma_adj:-0.06 }
+};
+const LIQUIDITY = { high:1.90, mid:1.60, low:1.30 };
+
+function calcP0(Mlow, Mhigh, F, strategyKey){
+  const M = (Mlow+Mhigh)/2, R = Mhigh-Mlow;
+  const a_s = STRATEGY[strategyKey].a_s;
+  return Math.round(clamp(M + a_s*R, F, Mhigh));
+}
+function calcK(strategyKey, liquidityKey){
+  return clamp(LIQUIDITY[liquidityKey] + STRATEGY[strategyKey].k_s, 0.65, 2.40);
+}
+function calcPbase(F, P0, r, T, k){
+  const ratio = T>0 ? clamp(r/T,0,1) : 0;
+  return F + (P0-F) * Math.pow(ratio, k);
+}
+function calcQ(fav, offerStrength, supply, lowDensity){
+  return clamp(0.30*fav + 0.35*offerStrength - 0.20*supply - 0.15*lowDensity, -1, 1);
+}
+function calcPtarget(Pbase, R, Q, F, Pcurrent){
+  return clamp(Pbase + 0.08*R*Q, F, Pcurrent);
+}
+function stepCapForR(r){
+  if(r>=15) return 0.03;
+  if(r>=9)  return 0.03;
+  if(r>=4)  return 0.06;
+  return 0.10;
+}
+function stepCapLabel(r){
+  if(r>=15) return 'D30–D15 · 3%';
+  if(r>=9)  return 'D14–D9 · 3%';
+  if(r>=4)  return 'D8–D4 · 6%';
+  return 'D3–D1 · 10%';
+}
+function calcPnext(Pcurrent, Ptarget, F, r){
+  const cap = stepCapForR(r);
+  return Math.max(F, Math.max(Pcurrent*(1-cap), Ptarget));
+}
+function checkFreqLabel(r){
+  if(r>=15) return '每周一次';
+  if(r>=9)  return '每 72 小时一次';
+  if(r>=4)  return '每 48 小时一次';
+  return '每天一次';
+}
+
+function calcKappa(strategyKey, r){
+  const kappa_s = STRATEGY[strategyKey].kappa_s;
+  let urgency = 0;
+  if(r>=15) urgency=0; else if(r>=8) urgency=0.05; else if(r>=4) urgency=0.10; else urgency=0.15;
+  return clamp(kappa_s+urgency, 0.05, 0.45);
+}
+function calcL(F, Pt, kappa){
+  return Math.round(Math.max(0.85*F, F - kappa*(Pt-F)));
+}
+function calcGamma(strategyKey, r){
+  let base=0;
+  if(r>=15) base=0.25; else if(r>=8) base=0.15; else if(r>=4) base=0.08; else base=0;
+  return clamp(base + STRATEGY[strategyKey].gamma_adj, 0, 0.35);
+}
+function calcC(F, Pt, gamma){
+  return Math.round(clamp(F + gamma*(Pt-F), F, Pt));
+}
+// 四分支判定： 'reject' | 'counter' | 'valid' | 'atprice'
+function decideOffer(B, L, F, Pt){
+  if(B < L) return 'reject';
+  if(B < F) return 'counter';
+  if(B < Pt) return 'valid';
+  return 'atprice';
+}
+
+</script>
+<script>
+function qParam2(name){
+  const u = new URL(location.href);
+  return u.searchParams.get(name);
+}
+
+function returnFromOffer(){
+  const from = qParam2('from');
+  const demo = qParam2('mode') === 'demo' ? '?mode=demo' : '';
+  location.href = (from === 'tasks' ? 'task-inbox.html' : 'price-plan.html') + demo;
+}
+
+let ctx = { F:450, strategy:'balance', r:14, P:690 };
+let offerLog = [];
+
+function init2(){
+  const F = qParam2('F'), s = qParam2('strategy'), r = qParam2('r'), P = qParam2('P');
+  if(F) ctx.F = Number(F);
+  if(s) ctx.strategy = s;
+  if(r) ctx.r = Number(r);
+  if(P) ctx.P = Number(P);
+  document.getElementById('ctxP').textContent = ctx.P;
+  document.getElementById('ctxF').textContent = ctx.F;
+  document.getElementById('ctxR').textContent = ctx.r;
+  document.getElementById('offerAmount').value = 430;
+}
+
+function fmtTimePlus2h(){
+  const d = new Date(Date.now() + 2*3600*1000);
+  const h = String(d.getHours()).padStart(2,'0');
+  const m = String(d.getMinutes()).padStart(2,'0');
+  return `${h}:${m}`;
+}
+function randBuyerId(){
+  return 'B_' + Math.random().toString(36).slice(2,6).toUpperCase();
+}
+
+function quickOffer(v){
+  document.getElementById('offerAmount').value = v;
+  document.getElementById('offerNote').value = '';
+  submitOffer();
+}
+function quickOfferAtPrice(){
+  document.getElementById('offerAmount').value = ctx.P;
+  document.getElementById('offerNote').value = '';
+  submitOffer();
+}
+
+function submitOffer(){
+  const amount = Number(document.getElementById('offerAmount').value);
+  const note = document.getElementById('offerNote').value.trim();
+  const pickup = document.getElementById('pickupTime').value;
+  if(!amount || amount<=0){ showToast('请输入有效的报价金额'); return; }
+
+  const kappa = calcKappa(ctx.strategy, ctx.r);
+  const L = calcL(ctx.F, ctx.P, kappa);
+  const gamma = calcGamma(ctx.strategy, ctx.r);
+  const C = calcC(ctx.F, ctx.P, gamma);
+
+  let branch = note.length>0 ? 'manual' : decideOffer(amount, L, ctx.F, ctx.P);
+
+  renderResult(branch, amount, { L, C, pickup, note });
+  offerLog.unshift({ amount, branch, time: new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) });
+  renderLog();
+}
+
+const BRANCH_LABEL = {
+  reject: '自动拒绝',
+  counter: 'AI 一次还价 · 待回应',
+  valid: '有效报价 · 候选交易',
+  atprice: '符合公开价 · 优先确认',
+  manual: '含特殊条件 · 转人工'
+};
+
+function renderResult(branch, amount, extra){
+  const zone = document.getElementById('resultZone');
+  let html = '';
+  if(branch==='reject'){
+    html = `
+    <div class="card" style="border-left:4px solid var(--xy-ink-faint);margin-top:16px;">
+      <div class="tag gray">自动拒绝</div>
+      <div style="font-weight:800;font-size:16px;margin-top:8px;">买家报价 ¥${amount} 已自动拒绝</div>
+      <div style="font-size:13px;color:var(--xy-ink-soft);margin-top:6px;line-height:1.6;">低于 AI 可尝试挽回线 L(t) = ¥${extra.L}。系统不透露底价、曲线或下一次降价时间；你未被打扰。</div>
+    </div>`;
+  } else if(branch==='counter'){
+    html = `
+    <div class="card" style="border-left:4px solid var(--xy-gold);margin-top:16px;">
+      <div class="tag gold">AI 一次还价 · 待回应</div>
+      <div style="font-weight:800;font-size:16px;margin-top:8px;">买家报价 ¥${amount} → AI 还价 ¥${extra.C}</div>
+      <div class="explain" style="margin-top:10px;">"当前暂不能接受 ¥${amount}；若提升至 ¥${extra.C}，可为你保留 2 小时。"</div>
+      <div style="font-size:12px;color:var(--xy-ink-faint);margin-top:8px;">有效期至 ${fmtTimePlus2h()}（或至下一检查节点，以更短者为准）· 该买家本商品仅可获得一次 AI 还价</div>
+    </div>`;
+  } else if(branch==='valid' || branch==='atprice'){
+    const buyer = randBuyerId();
+    const cardId = 'deal_'+Date.now();
+    html = `
+    <div class="card" style="border-left:4px solid var(--xy-green);margin-top:16px;" id="${cardId}">
+      <div class="tag green">${BRANCH_LABEL[branch]}</div>
+      <div style="font-weight:800;font-size:16px;margin-top:8px;">候选交易已生成 · ¥${amount}</div>
+      <div style="font-size:13px;color:var(--xy-ink-soft);margin-top:6px;line-height:1.6;">买家 ${buyer} · 可自提：${extra.pickup}<br>商品公开价已冻结 2 小时，等待你确认</div>
+      <div class="dealActions" style="display:flex;gap:10px;margin-top:14px;">
+        <button class="btn btn-secondary" style="flex:1;" onclick="resolveDeal('${cardId}','reject')">拒绝</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="resolveDeal('${cardId}','accept')">接受</button>
+      </div>
+    </div>`;
+  } else if(branch==='manual'){
+    html = `
+    <div class="card" style="border-left:4px solid var(--xy-orange);margin-top:16px;">
+      <div class="tag">含特殊条件 · 转人工</div>
+      <div style="font-weight:800;font-size:16px;margin-top:8px;">买家报价 ¥${amount} 附带备注</div>
+      <div style="font-size:13px;color:var(--xy-ink-soft);margin-top:6px;">"${extra.note}"</div>
+      <div style="font-size:12px;color:var(--xy-ink-faint);margin-top:8px;">备注含特殊条件，不进入自动规则，直接交由你处理</div>
+      <button class="btn btn-secondary btn-block" style="margin-top:12px;" onclick="showToast('已跳转至聊天详情（原型未展开）')">查看详情并回复</button>
+    </div>`;
+  }
+  zone.innerHTML = html;
+}
+
+function resolveDeal(cardId, action){
+  const card = document.getElementById(cardId);
+  if(!card) return;
+  const actions = card.querySelector('.dealActions');
+  if(action==='accept'){
+    actions.outerHTML = `<div class="tag green" style="margin-top:14px;">已接受 · 请与买家确认交接细节</div>`;
+    showToast('已接受候选交易');
+  } else {
+    actions.outerHTML = `<div class="tag gray" style="margin-top:14px;">已拒绝 · 商品已恢复在售状态</div>`;
+    showToast('已拒绝，恢复在售与下一次检查节奏');
+  }
+}
+
+function renderLog(){
+  const zone = document.getElementById('logZone');
+  if(offerLog.length===0){ zone.textContent = '暂无报价记录，试试上面的演示报价'; return; }
+  zone.innerHTML = offerLog.map(item=>{
+    const cls = item.branch==='reject' ? 'gray' : (item.branch==='counter' ? 'gold' : (item.branch==='manual' ? '' : 'green'));
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--xy-line);">
+      <span style="font-size:13px;color:var(--xy-ink);font-weight:600;">¥${item.amount} <span style="color:var(--xy-ink-faint);font-weight:400;">· ${item.time}</span></span>
+      <span class="tag ${cls}">${BRANCH_LABEL[item.branch]}</span>
+    </div>`;
+  }).join('');
+}
+
+init2();
+
+</script>
+<script src="mode.js"></script>
+</body>
+</html>

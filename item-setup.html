@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>单品设置 · 闲鱼</title>
+<style>
+:root{
+  --xy-orange:#FF4B10;
+  --xy-orange-deep:#DE3900;
+  --xy-orange-soft:#FFF0EA;
+  --xy-gold:#FFC300;
+  --xy-gold-soft:#FFF7DE;
+  --xy-ink:#1B1B1D;
+  --xy-ink-soft:#63636B;
+  --xy-ink-faint:#A2A2AA;
+  --xy-bg:#F4F3F1;
+  --xy-card:#FFFFFF;
+  --xy-line:#ECEBE8;
+  --xy-green:#0EA972;
+  --xy-green-bg:#E7F8F1;
+  --xy-red:#FF3B30;
+  --xy-red-bg:#FFECEA;
+  --xy-warn-bg:#FFF7E8;
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:10px;
+  --shadow:0 1px 2px rgba(20,15,10,.04), 0 10px 26px -14px rgba(20,15,10,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+  background:var(--xy-bg);
+  color:var(--xy-ink);
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+}
+.device{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  background:var(--xy-bg);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
+.statusbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 22px 4px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--xy-ink);
+  letter-spacing:.2px;
+}
+.statusbar .icons{display:flex;align-items:center;gap:5px;}
+.navbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 16px 12px;
+  position:sticky;
+  top:0;
+  background:var(--xy-bg);
+  z-index:20;
+}
+.navbar .side{width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.navbar .side svg{display:block;}
+.navbar h1{font-size:17px;font-weight:700;margin:0;letter-spacing:.2px;}
+.navbar .side.tap{cursor:pointer;border-radius:50%;background:rgba(0,0,0,.04);}
+.navbar .side.tap:active{background:rgba(0,0,0,.09);}
+
+.scroll{flex:1;overflow-y:auto;padding-bottom:110px;}
+.px{padding-left:16px;padding-right:16px;}
+
+.card{
+  background:var(--xy-card);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow);
+  padding:18px;
+}
+.section-title{
+  font-size:13px;
+  font-weight:700;
+  color:var(--xy-ink-soft);
+  letter-spacing:.5px;
+  margin:22px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.tag{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 9px;
+  border-radius:100px;
+  font-size:11.5px;
+  font-weight:600;
+  background:var(--xy-orange-soft);
+  color:var(--xy-orange-deep);
+}
+.tag.gold{background:var(--xy-gold-soft);color:#8a6400;}
+.tag.gray{background:#F0EFEC;color:var(--xy-ink-soft);}
+.tag.green{background:var(--xy-green-bg);color:var(--xy-green);}
+
+.btn{
+  border:none;
+  border-radius:100px;
+  font-size:15px;
+  font-weight:700;
+  padding:14px 20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:transform .15s ease, opacity .15s ease;
+  font-family:inherit;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--xy-orange),var(--xy-orange-deep));color:#fff;box-shadow:0 10px 20px -10px rgba(255,75,16,.6);}
+.btn-secondary{background:var(--xy-card);color:var(--xy-ink);border:1.5px solid var(--xy-line);}
+.btn-ghost{background:transparent;color:var(--xy-ink-soft);border:1.5px solid var(--xy-line);}
+.btn-block{width:100%;}
+.btn-sm{padding:9px 14px;font-size:13px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+.bottombar{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  display:flex;
+  justify-content:center;
+}
+.bottombar-inner{
+  width:100%;max-width:430px;
+  padding:10px 16px calc(18px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg, rgba(244,243,241,0) 0%, var(--xy-bg) 30%);
+  display:flex;gap:10px;
+}
+
+.explain{
+  background:var(--xy-warn-bg);
+  border-radius:var(--r-md);
+  padding:14px 16px;
+  font-size:13.5px;
+  line-height:1.65;
+  color:#7A5B00;
+  border:1px solid #FBE7A8;
+}
+.explain b{color:#5b4200;}
+
+.field-label{font-size:13px;color:var(--xy-ink-soft);font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;}
+.field-label .val{color:var(--xy-orange-deep);font-weight:800;font-size:14px;}
+
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:4px;border-radius:4px;
+  background:var(--xy-line);outline:none;margin:6px 0 2px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:3px solid var(--xy-orange);box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer;
+}
+.seg{display:flex;background:#F0EFEC;border-radius:100px;padding:4px;gap:4px;}
+.seg button{
+  flex:1;border:none;background:transparent;padding:9px 4px;border-radius:100px;
+  font-size:13px;font-weight:700;color:var(--xy-ink-soft);cursor:pointer;font-family:inherit;transition:all .18s ease;
+}
+.seg button.active{background:var(--xy-ink);color:#fff;}
+
+.toggle{width:46px;height:27px;border-radius:100px;background:var(--xy-line);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--xy-orange);}
+.toggle .knob{position:absolute;top:2.5px;left:2.5px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s;}
+.toggle.on .knob{left:21.5px;}
+
+.divider{height:1px;background:var(--xy-line);margin:14px 0;}
+
+.hero-price{font-size:44px;font-weight:800;letter-spacing:-1px;color:var(--xy-ink);}
+.hero-price .cny{font-size:22px;font-weight:700;margin-right:2px;color:var(--xy-orange-deep);}
+
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+
+.toast{
+  position:fixed;left:50%;bottom:110px;transform:translateX(-50%);
+  background:rgba(27,27,29,.92);color:#fff;padding:11px 18px;border-radius:100px;
+  font-size:13.5px;font-weight:600;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s, bottom .25s;
+  white-space:nowrap;
+}
+.toast.show{opacity:1;bottom:130px;}
+
+.item-card{
+  background:var(--xy-card);border-radius:var(--r-md);padding:12px;display:flex;gap:12px;
+  box-shadow:var(--shadow);margin-bottom:12px;align-items:center;cursor:pointer;transition:transform .15s;
+}
+.item-card:active{transform:scale(.98);}
+.item-card.disabled{cursor:default;}
+.item-card.disabled:active{transform:none;}
+.item-thumb{
+  width:64px;height:64px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:var(--xy-bg);
+}
+.badge-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+
+.product-context{display:flex;gap:12px;align-items:center;margin:1px 2px 10px;}
+.product-photo{width:82px;height:82px;border-radius:16px;overflow:hidden;flex-shrink:0;position:relative;background:var(--xy-bg);box-shadow:var(--shadow);}
+.product-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-count{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.58);color:#fff;border-radius:6px;padding:2px 5px;font-size:9px;font-weight:700;}
+.product-context-meta{min-width:0;display:flex;flex-direction:column;gap:5px;}
+.product-context-meta b{font-size:13px;}
+.product-context-meta p{margin:0;font-size:11.5px;line-height:1.45;color:var(--xy-ink-soft);}
+.deadline-chip{width:max-content;max-width:100%;border:0;border-radius:999px;background:var(--xy-gold-soft);color:#795900;padding:5px 8px;font:700 11px inherit;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.listing-card{padding:15px 16px!important;}
+.text-link-btn{appearance:none;border:0;background:transparent;padding:4px 0;color:var(--xy-orange-deep);font:800 12px inherit;cursor:pointer;}
+.listing-title{font-weight:800;font-size:16px;line-height:1.55;padding:1px 0 5px;outline:none;}
+.listing-desc{font-size:13px;line-height:1.72;color:var(--xy-ink-soft);padding:6px 0;outline:none;}
+.listing-title[contenteditable="true"],.listing-desc[contenteditable="true"]{background:var(--xy-bg);padding:9px 10px;border-radius:10px;box-shadow:inset 0 0 0 1.5px var(--xy-gold);}
+.listing-tags{display:flex;gap:7px;flex-wrap:wrap;padding-top:4px;}
+.listing-footer{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;border-top:1px solid var(--xy-line);margin-top:13px;padding-top:11px;}
+.listing-ai-actions{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px;}
+.ai-source{font-size:10.5px;line-height:1.45;color:var(--xy-ink-faint);}
+.regen-btn{appearance:none;border:0;background:var(--xy-bg);border-radius:999px;padding:7px 10px;color:var(--xy-ink-soft);font:700 11px inherit;white-space:nowrap;cursor:pointer;}
+.reference-card{padding:15px 16px!important;}
+.reference-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:0;}
+.reference-block{min-width:0;}
+.reference-block + .reference-block{border-left:1px solid var(--xy-line);padding-left:15px;margin-left:15px;}
+.reference-label{font-size:11px;font-weight:700;color:var(--xy-ink-faint);}
+.reference-price{font-size:25px;font-weight:800;line-height:1.15;margin-top:6px;color:var(--xy-orange-deep);letter-spacing:-.5px;}
+.reference-flow{font-size:20px;font-weight:800;line-height:1.2;margin-top:8px;}
+.reference-detail{font-size:11.5px;line-height:1.55;color:var(--xy-ink-soft);margin-top:6px;}
+.reference-rail{height:7px;border-radius:8px;background:var(--xy-bg);margin:12px 0 7px;position:relative;}
+.reference-rail:before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,var(--xy-gold),var(--xy-orange));opacity:.88;}
+.reference-marker{position:absolute;left:71%;top:-4px;width:3px;height:15px;border-radius:3px;background:var(--xy-ink);z-index:1;}
+.reference-range{display:flex;justify-content:space-between;color:var(--xy-ink-faint);font-size:10.5px;font-weight:700;}
+.reference-footer{border-top:1px solid var(--xy-line);margin-top:13px;padding-top:10px;font-size:11px;line-height:1.5;color:var(--xy-ink-faint);display:flex;justify-content:space-between;gap:10px;}
+.reference-footer button{appearance:none;border:0;background:none;padding:0;color:var(--xy-orange-deep);font:700 11px inherit;white-space:nowrap;cursor:pointer;}
+.plan-card{padding:16px!important;}
+.plan-label{font-size:13px;color:var(--xy-ink-soft);font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.plan-label .val{color:var(--xy-orange-deep);font-weight:800;font-size:14px;}
+.strategy-options{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.strategy-option{appearance:none;min-height:98px;border:1.5px solid var(--xy-line);border-radius:13px;background:#fff;padding:9px 7px 7px;text-align:left;cursor:pointer;font-family:inherit;color:var(--xy-ink-soft);}
+.strategy-option.active{border-color:var(--xy-ink);background:#1B1B1D;color:#fff;box-shadow:0 8px 18px -12px rgba(0,0,0,.55);}
+.strategy-option b{display:block;font-size:12px;line-height:1.25;}
+.strategy-option span{display:block;font-size:9.5px;line-height:1.35;margin-top:3px;opacity:.72;}
+.strategy-option svg{width:100%;height:28px;display:block;margin-top:8px;overflow:visible;}
+.strategy-option .floor-line{stroke:#D4D1CB;stroke-width:1;stroke-dasharray:2 3;}
+.strategy-option .curve-line{fill:none;stroke:var(--xy-orange);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.strategy-option.active .floor-line{stroke:rgba(255,255,255,.38);}
+.strategy-option.active .curve-line{stroke:var(--xy-gold);}
+.strategy-desc{font-size:12px;color:var(--xy-ink-soft);margin:12px 1px 0;line-height:1.6;}
+.authorization-card{padding:16px!important;display:flex;justify-content:space-between;align-items:center;}
+.authorization-copy{flex:1;padding-right:13px;}
+.authorization-copy b{display:block;font-size:14px;}
+.authorization-copy p{font-size:12px;line-height:1.58;color:var(--xy-ink-soft);margin:5px 0 0;}
+html[data-prototype-mode="user"] .demo-only{display:none!important;}
+
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;z-index:30;
+}
+.tabbar-inner{
+  width:100%;max-width:430px;display:flex;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);
+  border-top:1px solid var(--xy-line);
+  padding:8px 6px calc(6px + env(safe-area-inset-bottom));
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:5px 2px;border-radius:12px;cursor:pointer;color:var(--xy-ink-faint);
+}
+.tab.active{color:var(--xy-orange-deep);}
+.tab span{font-size:10.5px;font-weight:700;}
+
+::-webkit-scrollbar{display:none;}
+a{text-decoration:none;color:inherit;}
+
+</style>
+</head>
+<body>
+<div class="device">
+<div class="statusbar">
+  <span>9:41</span>
+  <span class="icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="#1B1B1D"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#1B1B1D"/><rect x="10" y="3" width="3" height="9" rx="0.5" fill="#1B1B1D"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#1B1B1D"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4C4.5 0.5 11.5 0.5 15 4" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><path d="M3.5 6.8C6 4.3 10 4.3 12.5 6.8" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="10" r="1.4" fill="#1B1B1D"/></svg>
+    <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#1B1B1D"/><rect x="2" y="2" width="15" height="8" rx="1.2" fill="#1B1B1D"/><rect x="21.5" y="4" width="1.8" height="4" rx="0.8" fill="#1B1B1D"/></svg>
+  </span>
+</div>
+<div class="navbar">
+  <div class="side tap" onclick="location.href='dashboard.html'"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="#1B1B1D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h1>单品设置</h1>
+  <div class="side"></div>
+</div>
+
+<div class="scroll px">
+
+  <div class="product-context">
+    <div class="product-photo"><img src="assets/yamaha-f310.png" alt="Yamaha F310 民谣吉他"><span class="photo-count">1/6</span></div>
+    <div class="product-context-meta">
+      <b>共 6 张图片</b>
+      <p>AI 已识别：民谣吉他 · 木色 · 含琴包</p>
+      <button class="deadline-chip" type="button" onclick="location.href='dashboard.html'" id="deadlineChip">离开：8月23日 · 14天　修改 ›</button>
+    </div>
+  </div>
+
+  <div class="card listing-card">
+    <div class="listing-title" id="listingTitle" contenteditable="false">Yamaha F310 民谣吉他｜95新｜附原装琴包</div>
+    <div class="listing-desc" id="listingDesc" contenteditable="false">自用一年半，保养良好，无磕碰、无开裂，琴颈平直、手感正常。附原装琴包与备用弦一套，已完成基础清洁。支持同城自提和当面试音，取货时间可提前沟通。</div>
+    <div class="listing-tags"><span class="tag gray">95新</span><span class="tag gray">同城自提</span><span class="tag gray">可试音</span><span class="tag gray">附原装琴包</span></div>
+    <div class="listing-footer"><div class="listing-ai-actions"><button class="regen-btn" type="button" onclick="showToast('已请求 AI 重新生成商品信息')">重新生成</button><span class="ai-source">✦ 由 AI 根据图片与商品信息生成</span></div><button class="text-link-btn" id="editListingBtn" type="button" onclick="toggleListingEdit()">编辑</button></div>
+  </div>
+
+  <div class="section-title">AI 定价参考</div>
+  <div class="card reference-card">
+    <div class="reference-grid">
+      <div class="reference-block">
+        <div class="reference-label">市场参考区间</div>
+        <div class="reference-price">¥690</div>
+        <div class="reference-detail">建议起售价 · 中等置信度</div>
+        <div class="reference-rail"><span class="reference-marker"></span></div>
+        <div class="reference-range"><span>¥520</span><span>¥760</span></div>
+      </div>
+      <div class="reference-block">
+        <div class="reference-label">流动性判断</div>
+        <div class="reference-flow">中等</div>
+        <div class="reference-detail">参考品类、成色、同城自提条件与近似商品流转速度</div>
+      </div>
+    </div>
+    <div class="reference-footer"><span>AI 参考用于辅助设置底价；底价始终由你决定。</span><button type="button" onclick="showToast('补充成色、配件或取货条件可更新判断')">查看依据 ›</button></div>
+  </div>
+
+  <div class="section-title">定价计划</div>
+  <div class="card plan-card">
+    <div class="plan-label"><span>保护底价 F</span><span class="val" id="fVal">¥450</span></div>
+    <div style="font-size:12px;color:var(--xy-ink-soft);margin:-2px 0 8px;">系统永不低于此价格出售 · 仅你可见</div>
+    <input type="range" id="fSlider" min="300" max="800" step="10" value="450" oninput="onFChange(this.value)">
+    <div id="fWarn" style="font-size:12px;color:var(--xy-red);margin-top:6px;display:none;">高于市场参考上沿，按期成交风险较高（不禁止发布）</div>
+    <div class="divider"></div>
+    <div class="plan-label"><span>销售策略</span><span style="font-size:11px;color:var(--xy-ink-faint);font-weight:600;">影响后续降价节奏</span></div>
+    <div class="strategy-options" id="strategySeg">
+      <button class="strategy-option" data-k="profit" type="button" onclick="setStrategy('profit')"><b>收益优先</b><span>高价停留更久</span><svg viewBox="0 0 80 28" aria-hidden="true"><path class="floor-line" d="M1 24H79"/><path class="curve-line" d="M2 5 C35 5,54 5,62 12 S72 20,78 22"/></svg></button>
+      <button class="strategy-option active" data-k="balance" type="button" onclick="setStrategy('balance')"><b>平衡出售</b><span>收益与成交平衡</span><svg viewBox="0 0 80 28" aria-hidden="true"><path class="floor-line" d="M1 24H79"/><path class="curve-line" d="M2 5 C26 7,52 13,78 22"/></svg></button>
+      <button class="strategy-option" data-k="fast" type="button" onclick="setStrategy('fast')"><b>尽快售出</b><span>更早降低价格</span><svg viewBox="0 0 80 28" aria-hidden="true"><path class="floor-line" d="M1 24H79"/><path class="curve-line" d="M2 5 C11 13,18 19,30 22 S58 23,78 23"/></svg></button>
+    </div>
+    <div id="strategyDesc" class="strategy-desc">价格随时间平稳调整，在成交速度与收益之间取得平衡。</div>
+  </div>
+
+  <div class="section-title">报价授权</div>
+  <div class="card authorization-card">
+    <div class="authorization-copy"><b>允许 AI 在边界内还价一次</b><p>仅当报价接近底价时触发；每位买家每件商品最多一次。AI 不会自动成交，仍由你确认交易。</p></div>
+    <div class="toggle on" id="counterToggle" onclick="toggleCounter()"><div class="knob"></div></div>
+  </div>
+
+  <div style="height:20px;"></div>
+</div>
+
+<div class="bottombar"><div class="bottombar-inner">
+  <button class="btn btn-primary btn-block" onclick="saveAndStart()">保存并查看价格计划</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+</div>
+<script>
+// ===== UI helper: toast =====
+let __toastTimer=null;
+function showToast(msg, ms){
+  const el = document.getElementById('toast');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(__toastTimer);
+  __toastTimer = setTimeout(()=>el.classList.remove('show'), ms||2200);
+}
+
+// ===== 闲鱼 · AI 自主清售计划 —— PRD v3.0 公式实现 =====
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+function roundToTen(v){ return Math.round(v/10)*10; }
+
+const STRATEGY = {
+  profit: { label:'收益优先', a_s:0.50, k_s:0.25, kappa_s:0.10, gamma_adj:0.08 },
+  balance:{ label:'平衡出售', a_s:0.20, k_s:0,    kappa_s:0.25, gamma_adj:0    },
+  fast:   { label:'尽快售出', a_s:-0.10,k_s:-0.25, kappa_s:0.35, gamma_adj:-0.06 }
+};
+const LIQUIDITY = { high:1.90, mid:1.60, low:1.30 };
+
+function calcP0(Mlow, Mhigh, F, strategyKey){
+  const M = (Mlow+Mhigh)/2, R = Mhigh-Mlow;
+  const a_s = STRATEGY[strategyKey].a_s;
+  return Math.round(clamp(M + a_s*R, F, Mhigh));
+}
+function calcK(strategyKey, liquidityKey){
+  return clamp(LIQUIDITY[liquidityKey] + STRATEGY[strategyKey].k_s, 0.65, 2.40);
+}
+function calcPbase(F, P0, r, T, k){
+  const ratio = T>0 ? clamp(r/T,0,1) : 0;
+  return F + (P0-F) * Math.pow(ratio, k);
+}
+function calcQ(fav, offerStrength, supply, lowDensity){
+  return clamp(0.30*fav + 0.35*offerStrength - 0.20*supply - 0.15*lowDensity, -1, 1);
+}
+function calcPtarget(Pbase, R, Q, F, Pcurrent){
+  return clamp(Pbase + 0.08*R*Q, F, Pcurrent);
+}
+function stepCapForR(r){
+  if(r>=15) return 0.03;
+  if(r>=9)  return 0.03;
+  if(r>=4)  return 0.06;
+  return 0.10;
+}
+function stepCapLabel(r){
+  if(r>=15) return 'D30–D15 · 3%';
+  if(r>=9)  return 'D14–D9 · 3%';
+  if(r>=4)  return 'D8–D4 · 6%';
+  return 'D3–D1 · 10%';
+}
+function calcPnext(Pcurrent, Ptarget, F, r){
+  const cap = stepCapForR(r);
+  return Math.max(F, Math.max(Pcurrent*(1-cap), Ptarget));
+}
+function checkFreqLabel(r){
+  if(r>=15) return '每周一次';
+  if(r>=9)  return '每 72 小时一次';
+  if(r>=4)  return '每 48 小时一次';
+  return '每天一次';
+}
+
+function calcKappa(strategyKey, r){
+  const kappa_s = STRATEGY[strategyKey].kappa_s;
+  let urgency = 0;
+  if(r>=15) urgency=0; else if(r>=8) urgency=0.05; else if(r>=4) urgency=0.10; else urgency=0.15;
+  return clamp(kappa_s+urgency, 0.05, 0.45);
+}
+function calcL(F, Pt, kappa){
+  return Math.round(Math.max(0.85*F, F - kappa*(Pt-F)));
+}
+function calcGamma(strategyKey, r){
+  let base=0;
+  if(r>=15) base=0.25; else if(r>=8) base=0.15; else if(r>=4) base=0.08; else base=0;
+  return clamp(base + STRATEGY[strategyKey].gamma_adj, 0, 0.35);
+}
+function calcC(F, Pt, gamma){
+  return Math.round(clamp(F + gamma*(Pt-F), F, Pt));
+}
+// 四分支判定： 'reject' | 'counter' | 'valid' | 'atprice'
+function decideOffer(B, L, F, Pt){
+  if(B < L) return 'reject';
+  if(B < F) return 'counter';
+  if(B < Pt) return 'valid';
+  return 'atprice';
+}
+
+</script>
+<script>
+const M_HIGH = 760;
+let currentStrategy = 'balance';
+
+const STRATEGY_DESC = {
+  profit: '前期保持较高价格更久，愿意为更高成交价多等待几天。',
+  balance: '价格随时间平稳下降，在成交速度与收益之间取得折中。',
+  fast: '更早、更快地降价，优先在截止日前完成成交。'
+};
+
+function loadDeadlineContext(){
+  try{
+    const raw = localStorage.getItem('clearoutDepartureDate');
+    if(!raw) return;
+    const [y,m,d] = raw.split('-').map(Number);
+    const departure = new Date(y,m-1,d);
+    const today = new Date(2026,7,9);
+    const days = Math.max(1, Math.round((Date.UTC(y,m-1,d)-Date.UTC(today.getFullYear(),today.getMonth(),today.getDate()))/(24*60*60*1000)));
+    document.getElementById('deadlineChip').textContent = `离开：${m}月${d}日 · ${days}天　修改 ›`;
+  }catch(e){}
+}
+
+function onFChange(v){
+  document.getElementById('fVal').textContent = '¥'+v;
+  document.getElementById('fWarn').style.display = (Number(v) >= M_HIGH) ? 'block' : 'none';
+}
+
+function setStrategy(k){
+  currentStrategy = k;
+  document.querySelectorAll('#strategySeg .strategy-option').forEach(b=>{
+    b.classList.toggle('active', b.dataset.k === k);
+  });
+  document.getElementById('strategyDesc').textContent = STRATEGY_DESC[k];
+}
+
+function toggleCounter(){
+  document.getElementById('counterToggle').classList.toggle('on');
+}
+
+function toggleListingEdit(){
+  const title = document.getElementById('listingTitle');
+  const desc = document.getElementById('listingDesc');
+  const button = document.getElementById('editListingBtn');
+  const editing = title.contentEditable === 'true';
+  title.contentEditable = editing ? 'false' : 'true';
+  desc.contentEditable = editing ? 'false' : 'true';
+  button.textContent = editing ? '编辑' : '完成';
+  if(!editing) title.focus();
+  else showToast('商品信息已更新，可继续保存计划');
+}
+
+function saveAndStart(){
+  const F = document.getElementById('fSlider').value;
+  const allowCounter = document.getElementById('counterToggle').classList.contains('on') ? 1 : 0;
+  const mode = new URLSearchParams(location.search).get('mode') === 'demo' ? '&mode=demo' : '';
+  showToast('已保存，正在生成价格计划…');
+  setTimeout(()=>{
+    location.href = `price-plan.html?F=${F}&strategy=${currentStrategy}&counter=${allowCounter}${mode}`;
+  }, 500);
+}
+
+loadDeadlineContext();
+
+</script>
+<script src="mode.js"></script>
+</body>
+</html>

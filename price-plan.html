@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>价格计划 · 闲鱼</title>
+<style>
+:root{
+  --xy-orange:#FF4B10;
+  --xy-orange-deep:#DE3900;
+  --xy-orange-soft:#FFF0EA;
+  --xy-gold:#FFC300;
+  --xy-gold-soft:#FFF7DE;
+  --xy-ink:#1B1B1D;
+  --xy-ink-soft:#63636B;
+  --xy-ink-faint:#A2A2AA;
+  --xy-bg:#F4F3F1;
+  --xy-card:#FFFFFF;
+  --xy-line:#ECEBE8;
+  --xy-green:#0EA972;
+  --xy-green-bg:#E7F8F1;
+  --xy-red:#FF3B30;
+  --xy-red-bg:#FFECEA;
+  --xy-warn-bg:#FFF7E8;
+  --xy-chart:#2D78C6;
+  --xy-chart-soft:#EAF4FF;
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:10px;
+  --shadow:0 1px 2px rgba(20,15,10,.04), 0 10px 26px -14px rgba(20,15,10,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+  background:var(--xy-bg);
+  color:var(--xy-ink);
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+}
+.device{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  background:var(--xy-bg);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
+.statusbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 22px 4px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--xy-ink);
+  letter-spacing:.2px;
+}
+.statusbar .icons{display:flex;align-items:center;gap:5px;}
+.navbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 16px 12px;
+  position:sticky;
+  top:0;
+  background:var(--xy-bg);
+  z-index:20;
+}
+.navbar .side{width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.navbar .side svg{display:block;}
+.navbar h1{font-size:17px;font-weight:700;margin:0;letter-spacing:.2px;}
+.navbar .side.tap{cursor:pointer;border-radius:50%;background:rgba(0,0,0,.04);}
+.navbar .side.tap:active{background:rgba(0,0,0,.09);}
+
+.scroll{flex:1;overflow-y:auto;padding-bottom:110px;}
+.px{padding-left:16px;padding-right:16px;}
+
+.card{
+  background:var(--xy-card);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow);
+  padding:18px;
+}
+.section-title{
+  font-size:13px;
+  font-weight:700;
+  color:var(--xy-ink-soft);
+  letter-spacing:.5px;
+  margin:22px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.tag{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 9px;
+  border-radius:100px;
+  font-size:11.5px;
+  font-weight:600;
+  background:var(--xy-orange-soft);
+  color:var(--xy-orange-deep);
+}
+.tag.gold{background:var(--xy-gold-soft);color:#8a6400;}
+.tag.gray{background:#F0EFEC;color:var(--xy-ink-soft);}
+.tag.green{background:var(--xy-green-bg);color:var(--xy-green);}
+
+.btn{
+  border:none;
+  border-radius:100px;
+  font-size:15px;
+  font-weight:700;
+  padding:14px 20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:transform .15s ease, opacity .15s ease;
+  font-family:inherit;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--xy-orange),var(--xy-orange-deep));color:#fff;box-shadow:0 10px 20px -10px rgba(255,75,16,.6);}
+.btn-secondary{background:var(--xy-card);color:var(--xy-ink);border:1.5px solid var(--xy-line);}
+.btn-ghost{background:transparent;color:var(--xy-ink-soft);border:1.5px solid var(--xy-line);}
+.btn-block{width:100%;}
+.btn-sm{padding:9px 14px;font-size:13px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+.bottombar{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  display:flex;
+  justify-content:center;
+}
+.bottombar-inner{
+  width:100%;max-width:430px;
+  padding:10px 16px calc(18px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg, rgba(244,243,241,0) 0%, var(--xy-bg) 30%);
+  display:flex;gap:10px;
+}
+
+.explain{
+  background:var(--xy-warn-bg);
+  border-radius:var(--r-md);
+  padding:14px 16px;
+  font-size:13.5px;
+  line-height:1.65;
+  color:#7A5B00;
+  border:1px solid #FBE7A8;
+}
+.explain b{color:#5b4200;}
+
+.field-label{font-size:13px;color:var(--xy-ink-soft);font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;}
+.field-label .val{color:var(--xy-orange-deep);font-weight:800;font-size:14px;}
+
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:4px;border-radius:4px;
+  background:var(--xy-line);outline:none;margin:6px 0 2px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:3px solid var(--xy-orange);box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer;
+}
+.seg{display:flex;background:#F0EFEC;border-radius:100px;padding:4px;gap:4px;}
+.seg button{
+  flex:1;border:none;background:transparent;padding:9px 4px;border-radius:100px;
+  font-size:13px;font-weight:700;color:var(--xy-ink-soft);cursor:pointer;font-family:inherit;transition:all .18s ease;
+}
+.seg button.active{background:var(--xy-ink);color:#fff;}
+
+.toggle{width:46px;height:27px;border-radius:100px;background:var(--xy-line);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--xy-orange);}
+.toggle .knob{position:absolute;top:2.5px;left:2.5px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s;}
+.toggle.on .knob{left:21.5px;}
+
+.divider{height:1px;background:var(--xy-line);margin:14px 0;}
+
+.hero-price{font-size:44px;font-weight:800;letter-spacing:-1px;color:var(--xy-ink);}
+.hero-price .cny{font-size:22px;font-weight:700;margin-right:2px;color:var(--xy-orange-deep);}
+
+.price-plan-card{padding:17px!important;overflow:hidden;}
+.price-plan-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.plan-item-name{font-size:12.5px;font-weight:800;color:var(--xy-ink);}
+.plan-item-meta{font-size:11px;color:var(--xy-ink-faint);margin-top:4px;}
+.plan-stage{display:inline-flex;align-items:center;background:var(--xy-chart-soft);color:#1D65AC;border-radius:999px;padding:4px 8px;font-size:10.5px;font-weight:800;margin-top:8px;}
+.plan-price-row{display:flex;align-items:flex-end;justify-content:space-between;margin:14px 0 10px;}
+.plan-price-eyebrow{font-size:12.5px;color:var(--xy-ink-soft);font-weight:700;}
+.plan-price-value{font-size:45px;line-height:1;font-weight:850;letter-spacing:-1.5px;margin-top:4px;color:var(--xy-ink);}
+.plan-price-value .cny{font-size:22px;letter-spacing:0;color:var(--xy-orange-deep);margin-right:2px;}
+.plan-price-side{text-align:right;padding-bottom:4px;}
+.plan-price-side b{display:block;font-size:12px;color:var(--xy-ink);}
+.plan-price-side span{display:block;font-size:10.5px;color:var(--xy-ink-faint);margin-top:4px;}
+.price-chart-wrap{position:relative;background:linear-gradient(180deg,#FBFDFF 0%,#F6FAFF 100%);border:1px solid #E7EFF8;border-radius:16px;padding:11px 10px 7px;margin-top:7px;}
+.price-chart-wrap svg{display:block;width:100%;overflow:visible;}
+.chart-caption{display:flex;justify-content:space-between;font-size:10.5px;color:var(--xy-ink-faint);margin-top:3px;}
+.chart-caption b{font-weight:800;color:var(--xy-ink-soft);}
+.price-plan-foot{display:flex;justify-content:space-between;gap:8px;padding-top:11px;font-size:11px;color:var(--xy-ink-faint);}
+.price-plan-foot span:last-child{text-align:right;}
+.price-plan-foot b{color:var(--xy-ink-soft);font-weight:800;}
+.demo-parameter-section,.calculation-section{display:block;}
+.advanced-signal-panel{display:none;margin-top:12px;padding:12px;border-radius:14px;background:#FAFAF8;border:1px solid var(--xy-line);}
+.advanced-signal-panel.open{display:block;}
+.advanced-signal-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;background:#FAFAF8;border:1.5px solid var(--xy-line);border-radius:12px;padding:11px 12px;margin-top:14px;color:var(--xy-ink-soft);font:700 12px inherit;cursor:pointer;}
+.advanced-signal-trigger span{font-size:10.5px;color:var(--xy-ink-faint);font-weight:600;}
+.plan-actions{display:flex;gap:10px;margin-top:18px;}
+.pause-plan-btn{background:transparent;color:var(--xy-ink-faint);border:1.5px solid transparent;}
+.pause-plan-btn:hover{background:#F0EFEC;color:var(--xy-ink-soft);}
+
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+
+.toast{
+  position:fixed;left:50%;bottom:110px;transform:translateX(-50%);
+  background:rgba(27,27,29,.92);color:#fff;padding:11px 18px;border-radius:100px;
+  font-size:13.5px;font-weight:600;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s, bottom .25s;
+  white-space:nowrap;
+}
+.toast.show{opacity:1;bottom:130px;}
+
+.item-card{
+  background:var(--xy-card);border-radius:var(--r-md);padding:12px;display:flex;gap:12px;
+  box-shadow:var(--shadow);margin-bottom:12px;align-items:center;cursor:pointer;transition:transform .15s;
+}
+.item-card:active{transform:scale(.98);}
+.item-card.disabled{cursor:default;}
+.item-card.disabled:active{transform:none;}
+.item-thumb{
+  width:64px;height:64px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;background:var(--xy-bg);
+}
+.badge-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;z-index:30;
+}
+.tabbar-inner{
+  width:100%;max-width:430px;display:flex;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);
+  border-top:1px solid var(--xy-line);
+  padding:8px 6px calc(6px + env(safe-area-inset-bottom));
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:5px 2px;border-radius:12px;cursor:pointer;color:var(--xy-ink-faint);
+}
+.tab.active{color:var(--xy-orange-deep);}
+.tab span{font-size:10.5px;font-weight:700;}
+
+::-webkit-scrollbar{display:none;}
+a{text-decoration:none;color:inherit;}
+
+</style>
+</head>
+<body>
+<div class="device">
+<div class="statusbar">
+  <span>9:41</span>
+  <span class="icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="#1B1B1D"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#1B1B1D"/><rect x="10" y="3" width="3" height="9" rx="0.5" fill="#1B1B1D"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#1B1B1D"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4C4.5 0.5 11.5 0.5 15 4" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><path d="M3.5 6.8C6 4.3 10 4.3 12.5 6.8" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="10" r="1.4" fill="#1B1B1D"/></svg>
+    <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#1B1B1D"/><rect x="2" y="2" width="15" height="8" rx="1.2" fill="#1B1B1D"/><rect x="21.5" y="4" width="1.8" height="4" rx="0.8" fill="#1B1B1D"/></svg>
+  </span>
+</div>
+<div class="navbar">
+  <div class="side tap" onclick="location.href='dashboard.html'"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="#1B1B1D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h1>Yamaha F310 · 价格计划</h1>
+  <div class="side tap" onclick="showToast('重设计划 / 暂停（见下方按钮）')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.8" fill="#1B1B1D"/><circle cx="12" cy="12" r="1.8" fill="#1B1B1D"/><circle cx="19" cy="12" r="1.8" fill="#1B1B1D"/></svg></div>
+</div>
+
+<div class="scroll px">
+
+  <div class="card price-plan-card" id="pricePlanCard">
+    <div class="price-plan-top">
+      <div><div class="plan-item-name">Yamaha F310 民谣吉他</div><div class="plan-item-meta">自动清售计划 · 价格按授权范围运行</div></div>
+      <div class="tag" id="strategyTag">平衡出售</div>
+    </div>
+    <div class="plan-price-row">
+      <div><div class="plan-price-eyebrow">当前对外公开价</div><div class="plan-price-value"><span class="cny">¥</span><span id="pNextDisplay">690</span></div></div>
+      <div class="plan-price-side"><b>剩余 <span id="rLabel1">14</span> 天</b><span>买家当前看到的价格</span></div>
+    </div>
+    <div class="plan-stage" id="phaseBadge">高价探索期 · 计划第 1 天</div>
+    <div class="price-chart-wrap">
+      <svg id="svgChart" viewBox="0 0 340 196" aria-label="价格轨迹">
+        <g id="chartGrid" stroke="#DDE7F1" stroke-width="1"><line x1="0" y1="42" x2="340" y2="42"/><line x1="0" y1="86" x2="340" y2="86"/><line x1="0" y1="130" x2="340" y2="130"/><line x1="0" y1="172" x2="340" y2="172"/><line x1="68" y1="10" x2="68" y2="172"/><line x1="136" y1="10" x2="136" y2="172"/><line x1="204" y1="10" x2="204" y2="172"/><line x1="272" y1="10" x2="272" y2="172"/></g>
+        <line id="floorLine" x1="0" y1="0" x2="340" y2="0" stroke="#99A7B5" stroke-width="1.2" stroke-dasharray="4,4"/>
+        <path id="curveArea" d="" fill="url(#areaGrad)" opacity=".8"/>
+        <path id="curvePath" d="" fill="none" stroke="url(#curveGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <line id="todayLine" x1="0" y1="0" x2="0" y2="172" stroke="#2D78C6" stroke-width="1.7" opacity=".8"/>
+        <circle id="todayDotOuter" r="6.4" fill="#fff" stroke="#2D78C6" stroke-width="2.3"/>
+        <circle id="todayDot" r="2.8" fill="#2D78C6"/>
+        <g id="todayCallout"><rect id="calloutRect" width="75" height="27" rx="8" fill="#fff" stroke="#D6E4F3"/><text id="calloutPrice" x="9" y="12" fill="#1B1B1D" font-size="10.5" font-weight="800">¥690</text><text id="calloutLabel" x="9" y="22" fill="#7B8794" font-size="8.5">当前公开价</text></g>
+        <defs>
+          <linearGradient id="curveGrad" x1="0" y1="0" x2="340" y2="0"><stop offset="0%" stop-color="#76AFE7"/><stop offset="100%" stop-color="#2D78C6"/></linearGradient>
+          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6EACE8" stop-opacity=".28"/><stop offset="100%" stop-color="#6EACE8" stop-opacity="0"/></linearGradient>
+        </defs>
+      </svg>
+      <div class="chart-caption"><span>启动日</span><span id="todayCaption"><b>今日</b> · 高价探索</span><span>离开日</span></div>
+    </div>
+    <div class="price-plan-foot"><span>启动价 <b>¥<span id="p0Label">688</span></b></span><span>保护底价 <b>¥<span id="fLabel1">450</span></b> · 仅你可见</span></div>
+  </div>
+
+  <div id="demoParameterSection" class="demo-parameter-section">
+  <div class="section-title">调价演示参数 <span style="font-weight:600;color:var(--xy-ink-faint);">拖动查看计划变化</span></div>
+
+  <div class="card">
+    <div class="field-label"><span>剩余天数 r</span><span class="val"><span id="rVal">14</span> 天</span></div>
+    <input type="range" id="rSlider" min="0" max="14" step="1" value="14" oninput="onInputChange()">
+    <div style="font-size:11.5px;color:var(--xy-ink-faint);margin-top:4px;">检查频率：<span id="freqLabel">每周一次</span> · 单次降幅上限 <span id="capLabel">3%</span></div>
+
+    <div class="divider"></div>
+    <div class="field-label"><span>销售策略</span></div>
+    <div class="seg" id="strategySeg2">
+      <button data-k="profit" onclick="setStrategy2('profit')">收益优先</button>
+      <button data-k="balance" class="active" onclick="setStrategy2('balance')">平衡出售</button>
+      <button data-k="fast" onclick="setStrategy2('fast')">尽快售出</button>
+    </div>
+
+    <div class="divider"></div>
+    <div class="field-label"><span>保护底价 F</span><span class="val">¥<span id="fVal2">450</span></span></div>
+    <input type="range" id="fSlider2" min="300" max="700" step="10" value="450" oninput="onInputChange()">
+
+    <button class="advanced-signal-trigger" type="button" onclick="toggleAdvanced()" id="advToggleBtn">市场信号（模拟）<span>展开 4 项影响因素 ›</span></button>
+    <div id="advPanel" class="advanced-signal-panel">
+      <div class="field-label"><span>收藏强度</span><span class="val" id="favVal">0.4</span></div>
+      <input type="range" id="favSlider" min="0" max="1" step="0.1" value="0.4" oninput="onInputChange()">
+      <div class="field-label" style="margin-top:12px;"><span>同类供给压力</span><span class="val" id="supplyVal">0.3</span></div>
+      <input type="range" id="supplySlider" min="0" max="1" step="0.1" value="0.3" oninput="onInputChange()">
+      <div class="field-label"><span>有效报价强度</span><span class="val" id="offerStrVal">0.3</span></div>
+      <input type="range" id="offerStrSlider" min="0" max="1" step="0.1" value="0.3" oninput="onInputChange()">
+      <div class="field-label" style="margin-top:12px;"><span>低价报价密度</span><span class="val" id="lowDensVal">0.3</span></div>
+      <input type="range" id="lowDensSlider" min="0" max="1" step="0.1" value="0.3" oninput="onInputChange()">
+    </div>
+  </div>
+  </div>
+
+  <div id="calculationSection" class="calculation-section">
+  <div class="section-title">定价计算过程 <span style="font-weight:600;color:var(--xy-ink-faint);">按 PRD 定价逻辑计算</span></div>
+  <div class="card" style="font-size:12.5px;">
+    <div class="calc-row" style="display:flex;justify-content:space-between;padding:6px 0;">P0（启动公开价）<b id="c_p0">¥688</b></div>
+    <div class="calc-row" style="display:flex;justify-content:space-between;padding:6px 0;">k（流动性×策略曲线系数）<b id="c_k">1.60</b></div>
+    <div class="calc-row" style="display:flex;justify-content:space-between;padding:6px 0;">P_base(t)（时间基准价）<b id="c_pbase">¥688</b></div>
+    <div class="calc-row" style="display:flex;justify-content:space-between;padding:6px 0;">Q（汇总信号，−1~1）<b id="c_q">0.00</b></div>
+    <div class="calc-row" style="display:flex;justify-content:space-between;padding:6px 0;">P_target（信号调整目标价）<b id="c_ptarget">¥688</b></div>
+    <div class="calc-row" style="display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--xy-line);margin-top:4px;padding-top:12px;">P_next（本节点实际公开价）<b id="c_pnext" style="color:var(--xy-orange-deep);">¥688</b></div>
+  </div>
+  </div>
+
+  <div class="section-title">系统解释</div>
+  <div class="explain" id="explainText">
+    计划刚启动，公开价按策略与流动性设为 ¥688（界面取整展示 ¥690），高于保护底价 ¥450。
+  </div>
+
+  <div class="plan-actions" id="planActions">
+    <button class="btn pause-plan-btn" style="flex:1;" onclick="showToast('自动调价已暂停：商品保持在售，但 AI 不再更新公开价或处理自动报价')">暂停自动调价</button>
+    <button class="btn btn-secondary" style="flex:1;" onclick="resetAll()">重设演示参数</button>
+  </div>
+
+  <div style="height:10px;"></div>
+</div>
+
+<div class="bottombar"><div class="bottombar-inner">
+  <button class="btn btn-primary btn-block" onclick="goOfferEngine()">查看本商品报价明细 ›</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+</div>
+<script>
+// ===== UI helper: toast =====
+let __toastTimer=null;
+function showToast(msg, ms){
+  const el = document.getElementById('toast');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(__toastTimer);
+  __toastTimer = setTimeout(()=>el.classList.remove('show'), ms||2200);
+}
+
+// ===== 闲鱼 · AI 自主清售计划 —— PRD v3.0 公式实现 =====
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+function roundToTen(v){ return Math.round(v/10)*10; }
+
+const STRATEGY = {
+  profit: { label:'收益优先', a_s:0.50, k_s:0.25, kappa_s:0.10, gamma_adj:0.08 },
+  balance:{ label:'平衡出售', a_s:0.20, k_s:0,    kappa_s:0.25, gamma_adj:0    },
+  fast:   { label:'尽快售出', a_s:-0.10,k_s:-0.25, kappa_s:0.35, gamma_adj:-0.06 }
+};
+const LIQUIDITY = { high:1.90, mid:1.60, low:1.30 };
+
+function calcP0(Mlow, Mhigh, F, strategyKey){
+  const M = (Mlow+Mhigh)/2, R = Mhigh-Mlow;
+  const a_s = STRATEGY[strategyKey].a_s;
+  return Math.round(clamp(M + a_s*R, F, Mhigh));
+}
+function calcK(strategyKey, liquidityKey){
+  return clamp(LIQUIDITY[liquidityKey] + STRATEGY[strategyKey].k_s, 0.65, 2.40);
+}
+function calcPbase(F, P0, r, T, k){
+  const ratio = T>0 ? clamp(r/T,0,1) : 0;
+  return F + (P0-F) * Math.pow(ratio, k);
+}
+function calcQ(fav, offerStrength, supply, lowDensity){
+  return clamp(0.30*fav + 0.35*offerStrength - 0.20*supply - 0.15*lowDensity, -1, 1);
+}
+function calcPtarget(Pbase, R, Q, F, Pcurrent){
+  return clamp(Pbase + 0.08*R*Q, F, Pcurrent);
+}
+function stepCapForR(r){
+  if(r>=15) return 0.03;
+  if(r>=9)  return 0.03;
+  if(r>=4)  return 0.06;
+  return 0.10;
+}
+function stepCapLabel(r){
+  if(r>=15) return 'D30–D15 · 3%';
+  if(r>=9)  return 'D14–D9 · 3%';
+  if(r>=4)  return 'D8–D4 · 6%';
+  return 'D3–D1 · 10%';
+}
+function calcPnext(Pcurrent, Ptarget, F, r){
+  const cap = stepCapForR(r);
+  return Math.max(F, Math.max(Pcurrent*(1-cap), Ptarget));
+}
+function checkFreqLabel(r){
+  if(r>=15) return '每周一次';
+  if(r>=9)  return '每 72 小时一次';
+  if(r>=4)  return '每 48 小时一次';
+  return '每天一次';
+}
+
+function calcKappa(strategyKey, r){
+  const kappa_s = STRATEGY[strategyKey].kappa_s;
+  let urgency = 0;
+  if(r>=15) urgency=0; else if(r>=8) urgency=0.05; else if(r>=4) urgency=0.10; else urgency=0.15;
+  return clamp(kappa_s+urgency, 0.05, 0.45);
+}
+function calcL(F, Pt, kappa){
+  return Math.round(Math.max(0.85*F, F - kappa*(Pt-F)));
+}
+function calcGamma(strategyKey, r){
+  let base=0;
+  if(r>=15) base=0.25; else if(r>=8) base=0.15; else if(r>=4) base=0.08; else base=0;
+  return clamp(base + STRATEGY[strategyKey].gamma_adj, 0, 0.35);
+}
+function calcC(F, Pt, gamma){
+  return Math.round(clamp(F + gamma*(Pt-F), F, Pt));
+}
+// 四分支判定： 'reject' | 'counter' | 'valid' | 'atprice'
+function decideOffer(B, L, F, Pt){
+  if(B < L) return 'reject';
+  if(B < F) return 'counter';
+  if(B < Pt) return 'valid';
+  return 'atprice';
+}
+
+</script>
+<script>
+let T = 14;
+const M_LOW = 520, M_HIGH = 760;
+let currentStrategy = 'balance';
+let advancedOpen = false;
+
+function qParam(name){
+  const u = new URL(location.href);
+  return u.searchParams.get(name);
+}
+
+function init(){
+  const qF = qParam('F'), qS = qParam('strategy'), qR = qParam('r');
+  const savedDeparture = localStorage.getItem('clearoutDepartureDate');
+  if(savedDeparture){
+    const base = new Date(2026, 7, 9);
+    const departure = new Date(savedDeparture+'T00:00:00');
+    const diff = Math.ceil((departure-base)/(1000*60*60*24));
+    if(Number.isFinite(diff) && diff >= 1){ T = Math.min(diff, 45); }
+  }
+  const rSlider = document.getElementById('rSlider');
+  rSlider.max = T;
+  rSlider.value = qR ? Math.max(0, Math.min(T, Number(qR))) : T;
+  if(qF) document.getElementById('fSlider2').value = qF;
+  if(qS){ currentStrategy = qS; }
+  document.querySelectorAll('#strategySeg2 button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.k===currentStrategy);
+  });
+  render();
+}
+
+function setStrategy2(k){
+  currentStrategy = k;
+  document.querySelectorAll('#strategySeg2 button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.k===k);
+  });
+  render();
+}
+
+function toggleAdvanced(){
+  advancedOpen = !advancedOpen;
+  const panel = document.getElementById('advPanel');
+  panel.classList.toggle('open', advancedOpen);
+  document.getElementById('advToggleBtn').innerHTML = advancedOpen ? '市场信号（模拟）<span>收起 4 项影响因素⌃</span>' : '市场信号（模拟）<span>展开 4 项影响因素 ›</span>';
+}
+
+function onInputChange(){ render(); }
+
+function resetAll(){
+  document.getElementById('rSlider').value = T;
+  document.getElementById('fSlider2').value = 450;
+  document.getElementById('favSlider').value = 0.4;
+  document.getElementById('supplySlider').value = 0.3;
+  document.getElementById('offerStrSlider').value = 0.3;
+  document.getElementById('lowDensSlider').value = 0.3;
+  currentStrategy = 'balance';
+  document.querySelectorAll('#strategySeg2 button').forEach(b=>b.classList.toggle('active', b.dataset.k==='balance'));
+  render();
+  showToast('已重设为默认参数');
+}
+
+function goOfferEngine(){
+  const F = document.getElementById('fSlider2').value;
+  const r = document.getElementById('rSlider').value;
+  const pnext = document.getElementById('pNextDisplay').textContent;
+  const demoMode = qParam('mode') === 'demo' ? '&mode=demo' : '';
+  location.href = `offer-engine.html?from=plan&F=${F}&strategy=${currentStrategy}&r=${r}&P=${pnext}${demoMode}`;
+}
+
+function render(){
+  const r = Number(document.getElementById('rSlider').value);
+  const F = Number(document.getElementById('fSlider2').value);
+  const fav = Number(document.getElementById('favSlider').value);
+  const supply = Number(document.getElementById('supplySlider').value);
+  const offerStr = Number(document.getElementById('offerStrSlider').value);
+  const lowDens = Number(document.getElementById('lowDensSlider').value);
+
+  document.getElementById('rVal').textContent = r;
+  document.getElementById('favVal').textContent = fav.toFixed(1);
+  document.getElementById('supplyVal').textContent = supply.toFixed(1);
+  document.getElementById('offerStrVal').textContent = offerStr.toFixed(1);
+  document.getElementById('lowDensVal').textContent = lowDens.toFixed(1);
+  document.getElementById('fVal2').textContent = F;
+  document.getElementById('fLabel1').textContent = F;
+  document.getElementById('rLabel1').textContent = r;
+  document.getElementById('freqLabel').textContent = checkFreqLabel(r);
+  document.getElementById('capLabel').textContent = Math.round(stepCapForR(r)*100)+'%';
+  document.getElementById('strategyTag').textContent = STRATEGY[currentStrategy].label;
+
+  const phase = phaseFor(r);
+  document.getElementById('phaseBadge').textContent = `${phase.label} · 计划第 ${Math.max(1, T-r+1)} 天`;
+  document.getElementById('todayCaption').textContent = `今日 · ${phase.short}`;
+
+  const P0 = calcP0(M_LOW, M_HIGH, F, currentStrategy);
+  const k = calcK(currentStrategy, 'mid');
+  const Pbase = calcPbase(F, P0, r, T, k);
+  const R = M_HIGH - M_LOW;
+  const Q = calcQ(fav, offerStr, supply, lowDens);
+  const Ptarget = calcPtarget(Pbase, R, Q, F, Pbase);
+  const Pnext = calcPnext(Pbase, Ptarget, F, r);
+  const PnextRounded = roundToTen(Pnext);
+
+  document.getElementById('pNextDisplay').textContent = PnextRounded;
+  document.getElementById('p0Label').textContent = P0;
+  document.getElementById('c_p0').textContent = '¥'+P0;
+  document.getElementById('c_k').textContent = k.toFixed(2);
+  document.getElementById('c_pbase').textContent = '¥'+Math.round(Pbase);
+  document.getElementById('c_q').textContent = (Q>=0?'+':'')+Q.toFixed(2);
+  document.getElementById('c_ptarget').textContent = '¥'+Math.round(Ptarget);
+  document.getElementById('c_pnext').textContent = '¥'+Math.round(Pnext);
+
+  // explanation copy, mirroring PRD §7 narrative pattern
+  const drop = Math.round(Pbase - Pnext);
+  const supplyWord = supply>=0.55 ? '同类供给明显增加' : (supply<=0.2 ? '同类供给平稳' : '同类供给略有增加');
+  const favWord = fav>=0.6 ? '收藏与关注度较高' : (fav<=0.2 ? '收藏与关注度偏低' : '收藏与关注度一般');
+  let explain;
+  if(r===T){
+    explain = `计划刚启动，公开价按「${STRATEGY[currentStrategy].label}」策略与 AI 判断的流动性设为 ¥${P0}（界面取整展示 ¥${roundToTen(P0)}），高于保护底价 ¥${F}。`;
+  } else if(drop <= 0){
+    explain = `距离开日还有 ${r} 天，${favWord}、${supplyWord}，公开价维持 ¥${Math.round(Pnext)}；仍高于你的保护底价 ¥${F}。`;
+  } else {
+    explain = `距离开日还有 ${r} 天，且${supplyWord}，已将公开价从约 ¥${Math.round(Pbase)} 调整至 ¥${Math.round(Pnext)}；仍高于你的保护底价 ¥${F}。`;
+  }
+  document.getElementById('explainText').textContent = explain;
+
+  drawChart(F, P0, k, r, Pnext);
+}
+
+function phaseFor(r){
+  const elapsed = T-r;
+  if(r <= Math.min(3, Math.max(1, Math.floor(T*.22)))) return {label:'临近离开 · 加速出售期', short:'加速出售'};
+  if(elapsed <= Math.max(2, Math.floor(T*.30))) return {label:'高价探索期', short:'高价探索'};
+  return {label:'平稳调整期', short:'平稳调整'};
+}
+
+function drawChart(F, P0, k, r, Pnext){
+  const W=340, H=196, padTop=12, padBottom=24;
+  const yMax = Math.max(P0, M_HIGH) * 1.02;
+  const yMin = F * 0.96;
+  const chartH = H - padTop - padBottom;
+  const x = (e)=> (e/T) * W;
+  const y = (p)=> padTop + (yMax - p) / (yMax - yMin) * chartH;
+
+  let pts = [];
+  const N = 28;
+  for(let i=0;i<=N;i++){
+    const e = (i/N)*T;
+    const rem = T - e;
+    const p = calcPbase(F, P0, rem, T, k);
+    pts.push([x(e), y(p)]);
+  }
+  const pathD = 'M ' + pts.map(pt=>pt[0].toFixed(1)+' '+pt[1].toFixed(1)).join(' L ');
+  document.getElementById('curvePath').setAttribute('d', pathD);
+
+  const areaD = pathD + ` L ${W} ${H-padBottom} L 0 ${H-padBottom} Z`;
+  document.getElementById('curveArea').setAttribute('d', areaD);
+
+  const fy = y(F);
+  document.getElementById('floorLine').setAttribute('y1', fy);
+  document.getElementById('floorLine').setAttribute('y2', fy);
+
+  const eNow = T - r;
+  const tx = x(eNow);
+  document.getElementById('todayLine').setAttribute('x1', tx);
+  document.getElementById('todayLine').setAttribute('x2', tx);
+  const ty = y(Pnext);
+  document.getElementById('todayLine').setAttribute('y1', 10);
+  document.getElementById('todayLine').setAttribute('y2', H-padBottom);
+  document.getElementById('todayDotOuter').setAttribute('cx', tx);
+  document.getElementById('todayDotOuter').setAttribute('cy', ty);
+  document.getElementById('todayDot').setAttribute('cx', tx);
+  document.getElementById('todayDot').setAttribute('cy', ty);
+  const calloutX = Math.max(4, Math.min(W-79, tx + (tx > W-92 ? -81 : 8)));
+  const calloutY = Math.max(4, Math.min(H-54, ty-38));
+  document.getElementById('todayCallout').setAttribute('transform', `translate(${calloutX},${calloutY})`);
+  document.getElementById('calloutPrice').textContent = '¥'+roundToTen(Pnext);
+}
+
+init();
+
+</script>
+<script src="mode.js"></script>
+</body>
+</html>

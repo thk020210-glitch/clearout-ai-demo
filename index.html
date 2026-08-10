@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>闲鱼 · AI 自主清售计划 — 交互原型</title>
+<style>
+  *{box-sizing:border-box;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+    background:#F4F3F1;color:#1B1B1D;margin:0;padding:0;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:56px 24px 80px;}
+  .eyebrow{font-size:13px;font-weight:700;color:#DE3900;letter-spacing:.5px;}
+  h1{font-size:30px;font-weight:800;margin:10px 0 6px;letter-spacing:-.5px;}
+  .sub{font-size:15px;color:#63636B;line-height:1.7;max-width:640px;}
+  .meta{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;}
+  .pill{font-size:12px;font-weight:600;background:#fff;border:1px solid #ECEBE8;padding:6px 12px;border-radius:100px;color:#63636B;}
+  .grid{
+    margin-top:40px;display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;
+  }
+  .card{
+    background:#fff;border-radius:20px;padding:22px;
+    box-shadow:0 1px 2px rgba(20,15,10,.04), 0 10px 26px -14px rgba(20,15,10,.14);
+    display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;
+    border:1.5px solid transparent;transition:border-color .15s, transform .15s;
+  }
+  .card:hover{border-color:#FF4B10;transform:translateY(-2px);}
+  .num{font-size:12px;font-weight:800;color:#FFC300;background:#1B1B1D;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+  .card h2{font-size:16px;margin:0;font-weight:800;}
+  .card p{font-size:13px;color:#63636B;margin:0;line-height:1.6;}
+  .tag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:#FFF0EA;color:#DE3900;}
+  footer{margin-top:56px;font-size:12.5px;color:#A2A2AA;line-height:1.8;border-top:1px solid #ECEBE8;padding-top:20px;}
+  footer a{color:#DE3900;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">交互式 UI 原型 · 高保真</div>
+  <h1>闲鱼 · AI 自主清售计划</h1>
+  <p class="sub">根据 PRD v3.0 生成的七屏移动端原型。价格计划与单品报价明细为完整可交互 Demo：拖动参数或提交报价会按 PRD 规则实时更新，而非预设截图。</p>
+  <div class="meta">
+    <span class="pill">保真度：高保真 / 生产级</span>
+    <span class="pill">交互深度：核心引擎完整可玩</span>
+    <span class="pill">视觉方向：贴合闲鱼真实视觉语言</span>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="entry.html">
+      <div class="num">1</div>
+      <h2>发布成功入口</h2>
+      <p>「自主清售计划」与「无忧卖」并列呈现，而非前置漏斗。</p>
+    </a>
+    <a class="card" href="dashboard.html">
+      <div class="num">2</div>
+      <h2>多件商品概览</h2>
+      <p>离开倒计时、注意力摘要、四件商品状态一览。</p>
+    </a>
+    <a class="card" href="item-setup.html">
+      <div class="num">3</div>
+      <h2>单品设置</h2>
+      <p>AI 生成标题/描述、市场参考区间、保护底价、销售策略、一次还价开关。</p>
+    </a>
+    <a class="card" href="price-plan.html">
+      <div class="num">4</div>
+      <h2>价格计划<span class="tag" style="margin-left:6px;">可交互</span></h2>
+      <p>P0 / k / P_base(t) / Q / P_next 实时按公式计算，价格曲线随参数联动重绘。</p>
+    </a>
+    <a class="card" href="task-inbox.html">
+      <div class="num">5</div>
+      <h2>交易任务</h2>
+      <p>跨商品汇总仅需卖家决定的候选交易；AI 已处理的报价只呈现摘要。</p>
+    </a>
+    <a class="card" href="offer-engine.html">
+      <div class="num">6</div>
+      <h2>单品报价明细<span class="tag" style="margin-left:6px;">可交互</span></h2>
+      <p>输入任意报价，四分支判定（自动拒绝 / AI还价 / 候选交易 / 优先确认）实时生成。</p>
+    </a>
+    <a class="card" href="results.html">
+      <div class="num">7</div>
+      <h2>计划结果</h2>
+      <p>北极星指标与辅助指标摘要，对应 PRD §10 衡量指标与验证计划。</p>
+    </a>
+  </div>
+
+  <footer>
+    源 PRD：闲鱼_AI自主清售计划_PRD_v3.docx · 设计说明见 <a href="design-spec.md">design-spec.md</a><br>
+    建议从「发布成功入口」开始按顺序体验，或直接进入「价格计划」「单品报价明细」体验核心可交互引擎。
+  </footer>
+</div>
+<script src="mode.js"></script>
+</body>
+</html>
