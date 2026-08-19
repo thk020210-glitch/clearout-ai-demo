@@ -31,6 +31,7 @@
   .card h2{font-size:16px;margin:0;font-weight:800;}
   .card p{font-size:13px;color:#63636B;margin:0;line-height:1.6;}
   .tag{align-self:flex-start;font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;background:#FFF0EA;color:#DE3900;}
+  .tag.new{background:#1B1B1D;color:#FFC300;}
   footer{margin-top:56px;font-size:12.5px;color:#A2A2AA;line-height:1.8;border-top:1px solid #ECEBE8;padding-top:20px;}
   footer a{color:#DE3900;font-weight:600;}
 </style>
@@ -39,7 +40,7 @@
 <div class="wrap">
   <div class="eyebrow">交互式 UI 原型 · 高保真</div>
   <h1>闲鱼 · AI 自主清售计划</h1>
-  <p class="sub">根据 PRD v3.0 生成的七屏移动端原型。价格计划与单品报价明细为完整可交互 Demo：拖动参数或提交报价会按 PRD 规则实时更新，而非预设截图。</p>
+  <p class="sub">根据 PRD v3.0 生成的移动端原型，现覆盖返回用户的核心操作闭环，以及一套完整的新用户引导流程。价格计划与单品报价明细为完整可交互 Demo：拖动参数或提交报价会按 PRD 规则实时更新，而非预设截图。</p>
   <div class="meta">
     <span class="pill">保真度：高保真 / 生产级</span>
     <span class="pill">交互深度：核心引擎完整可玩</span>
@@ -50,35 +51,50 @@
     <a class="card" href="entry.html">
       <div class="num">1</div>
       <h2>发布成功入口</h2>
-      <p>「自主清售计划」与「无忧卖」并列呈现，而非前置漏斗。</p>
+      <p>「自主清售计划」与「无忧卖」并列呈现，而非前置漏斗。点击后进入新用户引导。</p>
+    </a>
+    <a class="card" href="plan-setup.html">
+      <div class="num">2</div>
+      <h2>创建清售计划<span class="tag new" style="margin-left:6px;">新增</span></h2>
+      <p>分步引导设置离开日期、取货偏好与自动化范围，模拟卖家从零创建计划的过程。</p>
+    </a>
+    <a class="card" href="item-add.html">
+      <div class="num">3</div>
+      <h2>添加商品<span class="tag new" style="margin-left:6px;">新增</span></h2>
+      <p>拍照新建或从已上架商品中选取，六步引导完成 AI 定价参考、底价与策略设置。</p>
+    </a>
+    <a class="card" href="onboarding-complete.html">
+      <div class="num">4</div>
+      <h2>计划已创建<span class="tag new" style="margin-left:6px;">新增</span></h2>
+      <p>创建完成后的过渡页，衔接进入下方已配置好的多商品清售计划。</p>
     </a>
     <a class="card" href="dashboard.html">
-      <div class="num">2</div>
+      <div class="num">5</div>
       <h2>多件商品概览</h2>
       <p>离开倒计时、注意力摘要、四件商品状态一览。</p>
     </a>
     <a class="card" href="item-setup.html">
-      <div class="num">3</div>
+      <div class="num">6</div>
       <h2>单品设置</h2>
       <p>AI 生成标题/描述、市场参考区间、保护底价、销售策略、一次还价开关。</p>
     </a>
     <a class="card" href="price-plan.html">
-      <div class="num">4</div>
+      <div class="num">7</div>
       <h2>价格计划<span class="tag" style="margin-left:6px;">可交互</span></h2>
       <p>P0 / k / P_base(t) / Q / P_next 实时按公式计算，价格曲线随参数联动重绘。</p>
     </a>
     <a class="card" href="task-inbox.html">
-      <div class="num">5</div>
+      <div class="num">8</div>
       <h2>交易任务</h2>
       <p>跨商品汇总仅需卖家决定的候选交易；AI 已处理的报价只呈现摘要。</p>
     </a>
     <a class="card" href="offer-engine.html">
-      <div class="num">6</div>
+      <div class="num">9</div>
       <h2>单品报价明细<span class="tag" style="margin-left:6px;">可交互</span></h2>
       <p>输入任意报价，四分支判定（自动拒绝 / AI还价 / 候选交易 / 优先确认）实时生成。</p>
     </a>
     <a class="card" href="results.html">
-      <div class="num">7</div>
+      <div class="num">10</div>
       <h2>计划结果</h2>
       <p>北极星指标与辅助指标摘要，对应 PRD §10 衡量指标与验证计划。</p>
     </a>
@@ -86,7 +102,7 @@
 
   <footer>
     源 PRD：闲鱼_AI自主清售计划_PRD_v3.docx · 设计说明见 <a href="design-spec.md">design-spec.md</a><br>
-    建议从「发布成功入口」开始按顺序体验，或直接进入「价格计划」「单品报价明细」体验核心可交互引擎。
+    建议从「发布成功入口」开始按顺序体验完整的新用户引导流程，或直接进入「价格计划」「单品报价明细」体验核心可交互引擎。
   </footer>
 </div>
 <script src="mode.js"></script>
