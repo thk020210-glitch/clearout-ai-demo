@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>创建清售计划 · 闲鱼</title>
+<style>
+:root{
+  --xy-orange:#FF4B10;
+  --xy-orange-deep:#DE3900;
+  --xy-orange-soft:#FFF0EA;
+  --xy-gold:#FFC300;
+  --xy-gold-soft:#FFF7DE;
+  --xy-ink:#1B1B1D;
+  --xy-ink-soft:#63636B;
+  --xy-ink-faint:#A2A2AA;
+  --xy-bg:#F4F3F1;
+  --xy-card:#FFFFFF;
+  --xy-line:#ECEBE8;
+  --xy-green:#0EA972;
+  --xy-green-bg:#E7F8F1;
+  --xy-red:#FF3B30;
+  --xy-red-bg:#FFECEA;
+  --xy-warn-bg:#FFF7E8;
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:10px;
+  --shadow:0 1px 2px rgba(20,15,10,.04), 0 10px 26px -14px rgba(20,15,10,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+  background:var(--xy-bg);
+  color:var(--xy-ink);
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+}
+.device{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  background:var(--xy-bg);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
+.app-header{position:sticky;top:0;z-index:20;background:var(--xy-bg);}
+.statusbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 22px 4px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--xy-ink);
+  letter-spacing:.2px;
+}
+.statusbar .icons{display:flex;align-items:center;gap:5px;}
+.navbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 16px 12px;
+}
+.navbar .side{width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.navbar .side svg{display:block;}
+.navbar h1{font-size:17px;font-weight:700;margin:0;letter-spacing:.2px;}
+.navbar .side.tap{cursor:pointer;border-radius:50%;background:rgba(0,0,0,.04);}
+.navbar .side.tap:active{background:rgba(0,0,0,.09);}
+
+.scroll{flex:1;overflow-y:auto;padding-bottom:110px;}
+.px{padding-left:16px;padding-right:16px;}
+
+.card{
+  background:var(--xy-card);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow);
+  padding:18px;
+}
+.section-title{
+  font-size:13px;
+  font-weight:700;
+  color:var(--xy-ink-soft);
+  letter-spacing:.5px;
+  margin:22px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.tag{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 9px;
+  border-radius:100px;
+  font-size:11.5px;
+  font-weight:600;
+  background:var(--xy-orange-soft);
+  color:var(--xy-orange-deep);
+}
+.tag.gold{background:var(--xy-gold-soft);color:#8a6400;}
+.tag.gray{background:#F0EFEC;color:var(--xy-ink-soft);}
+
+.btn{
+  border:none;
+  border-radius:100px;
+  font-size:15px;
+  font-weight:700;
+  padding:14px 20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:transform .15s ease, opacity .15s ease;
+  font-family:inherit;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--xy-orange),var(--xy-orange-deep));color:#fff;box-shadow:0 10px 20px -10px rgba(255,75,16,.6);}
+.btn-secondary{background:var(--xy-card);color:var(--xy-ink);border:1.5px solid var(--xy-line);}
+.btn-ghost{background:transparent;color:var(--xy-ink-soft);border:1.5px solid var(--xy-line);}
+.btn-block{width:100%;}
+.btn-sm{padding:9px 14px;font-size:13px;}
+
+.bottombar{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  display:flex;
+  justify-content:center;
+}
+.bottombar-inner{
+  width:100%;max-width:430px;
+  padding:10px 16px calc(18px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg, rgba(244,243,241,0) 0%, var(--xy-bg) 30%);
+  display:flex;gap:10px;
+}
+
+.divider{height:1px;background:var(--xy-line);margin:14px 0;}
+
+.toast{
+  position:fixed;left:50%;bottom:110px;transform:translateX(-50%);
+  background:rgba(27,27,29,.92);color:#fff;padding:11px 18px;border-radius:100px;
+  font-size:13.5px;font-weight:600;z-index:100;opacity:0;pointer-events:none;transition:opacity .25s, bottom .25s;
+  white-space:nowrap;
+}
+.toast.show{opacity:1;bottom:130px;}
+
+.toggle{width:46px;height:27px;border-radius:100px;background:var(--xy-line);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--xy-orange);}
+.toggle .knob{position:absolute;top:2.5px;left:2.5px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s;}
+.toggle.on .knob{left:21.5px;}
+
+::-webkit-scrollbar{display:none;}
+a{text-decoration:none;color:inherit;}
+
+/* ===== 引导教程条 ===== */
+.coach-bar{background:#1B1B1D;color:#fff;border-radius:0 0 18px 18px;padding:12px 16px 14px;margin:0 0 4px;box-shadow:0 10px 24px -14px rgba(0,0,0,.4);}
+.coach-progress{display:flex;gap:5px;margin-bottom:9px;}
+.coach-progress i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.22);}
+.coach-progress i.done{background:var(--xy-gold);}
+.coach-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.coach-step-label{font-size:10.5px;font-weight:800;color:var(--xy-gold);letter-spacing:.4px;}
+.coach-title{font-size:14.5px;font-weight:800;margin:3px 0 4px;}
+.coach-desc{font-size:12px;line-height:1.55;color:rgba(255,255,255,.72);}
+.coach-skip{flex-shrink:0;appearance:none;border:0;background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);border-radius:100px;padding:6px 10px;font:700 11px inherit;cursor:pointer;white-space:nowrap;}
+.coach-nav{display:flex;gap:8px;margin-top:11px;}
+.coach-nav button{appearance:none;border:0;border-radius:100px;padding:8px 14px;font:800 12.5px inherit;cursor:pointer;}
+.coach-prev{background:rgba(255,255,255,.1);color:#fff;}
+.coach-next{background:linear-gradient(135deg,var(--xy-gold),var(--xy-orange));color:#1B1B1D;flex:1;justify-content:center;display:flex;}
+.coach-bar.done{display:none;}
+
+/* 高亮态：当前引导指向的卡片 */
+.step-card{position:relative;scroll-margin-top:150px;transition:box-shadow .25s ease;}
+.step-card.coach-target{box-shadow:0 0 0 2.5px var(--xy-orange), var(--shadow);}
+.step-card .step-flag{position:absolute;top:-9px;left:16px;background:var(--xy-orange);color:#fff;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:100px;opacity:0;transform:translateY(3px);transition:all .2s ease;pointer-events:none;}
+.step-card.coach-target .step-flag{opacity:1;transform:translateY(0);}
+
+.intro-card{display:flex;gap:12px;align-items:flex-start;}
+.intro-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--xy-gold),var(--xy-orange));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.intro-skip{font-size:12px;font-weight:700;color:var(--xy-orange-deep);margin-top:9px;display:inline-block;}
+
+.plan-field-btn{width:100%;appearance:none;border:0;background:var(--xy-bg);border-radius:var(--r-md);padding:14px 15px;text-align:left;cursor:pointer;font:inherit;color:var(--xy-ink);display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.plan-field-btn b{font-size:15px;font-weight:800;}
+.plan-field-btn span{font-size:11.5px;color:var(--xy-ink-soft);font-weight:600;}
+.plan-field-days{font-size:12px;color:var(--xy-orange-deep);font-weight:800;background:var(--xy-orange-soft);padding:4px 9px;border-radius:100px;white-space:nowrap;}
+
+.pickup-chip-group{display:flex;flex-direction:column;gap:8px;}
+.pickup-chip{appearance:none;border:1.5px solid var(--xy-line);background:#fff;border-radius:14px;padding:12px 13px;text-align:left;font:inherit;cursor:pointer;color:var(--xy-ink);}
+.pickup-chip b{display:block;font-size:13.5px;font-weight:700;}
+.pickup-chip span{display:block;font-size:11.5px;color:var(--xy-ink-soft);margin-top:2px;}
+.pickup-chip.active{border-color:var(--xy-ink);background:#1B1B1D;color:#fff;}
+.pickup-chip.active span{color:rgba(255,255,255,.62);}
+
+.auto-row{display:flex;justify-content:space-between;align-items:center;gap:14px;}
+.auto-copy b{display:block;font-size:14px;}
+.auto-copy p{font-size:12px;line-height:1.58;color:var(--xy-ink-soft);margin:5px 0 0;}
+
+.calendar-sheet{position:fixed;inset:0;z-index:90;display:none;align-items:flex-end;justify-content:center;}
+.calendar-sheet.open{display:flex;}
+.calendar-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.42);backdrop-filter:blur(2px);}
+.calendar-panel{position:relative;width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;padding:16px 16px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -12px 36px rgba(0,0,0,.18);animation:sheetUp .22s ease-out;}
+@keyframes sheetUp{from{transform:translateY(24px);opacity:.4}to{transform:translateY(0);opacity:1}}
+.calendar-handle{width:34px;height:4px;background:#D7D5D1;border-radius:99px;margin:0 auto 14px;}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;}
+.calendar-head h2{font-size:18px;margin:0;font-weight:800;}
+.calendar-nav{width:34px;height:34px;border:0;border-radius:50%;background:#F4F3F1;color:var(--xy-ink);font-size:20px;cursor:pointer;}
+.calendar-nav:disabled{opacity:.25;cursor:not-allowed;}
+.calendar-subtitle{font-size:12.5px;color:var(--xy-ink-soft);line-height:1.55;margin:8px 0 15px;}
+.calendar-week,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;gap:5px;}
+.calendar-week{font-size:11px;color:var(--xy-ink-faint);margin-bottom:7px;}
+.calendar-day{height:36px;border:0;background:transparent;border-radius:50%;font:600 13px/36px inherit;color:var(--xy-ink);cursor:pointer;}
+.calendar-day:hover{background:var(--xy-gold-soft);}
+.calendar-day.is-empty{pointer-events:none;}
+.calendar-day.is-past{color:#C9C7C2;pointer-events:none;}
+.calendar-day.is-selected{background:var(--xy-gold);color:var(--xy-ink);font-weight:800;}
+.calendar-day.is-today:not(.is-selected){box-shadow:inset 0 0 0 1.5px var(--xy-orange);color:var(--xy-orange-deep);}
+.calendar-confirm{margin-top:17px;}
+</style>
+</head>
+<body>
+<div class="device">
+
+<div class="app-header">
+<div class="statusbar">
+  <span>9:41</span>
+  <span class="icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="#1B1B1D"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#1B1B1D"/><rect x="10" y="3" width="3" height="9" rx="0.5" fill="#1B1B1D"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#1B1B1D"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4C4.5 0.5 11.5 0.5 15 4" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><path d="M3.5 6.8C6 4.3 10 4.3 12.5 6.8" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="10" r="1.4" fill="#1B1B1D"/></svg>
+    <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#1B1B1D"/><rect x="2" y="2" width="15" height="8" rx="1.2" fill="#1B1B1D"/><rect x="21.5" y="4" width="1.8" height="4" rx="0.8" fill="#1B1B1D"/></svg>
+  </span>
+</div>
+<div class="navbar">
+  <div class="side tap" onclick="location.href='entry.html'"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="#1B1B1D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h1>创建清售计划</h1>
+  <div class="side"></div>
+</div>
+
+<div class="px">
+  <div class="coach-bar" id="coachBar">
+    <div class="coach-progress" id="coachProgress"></div>
+    <div class="coach-top">
+      <div>
+        <div class="coach-step-label" id="coachStepLabel">步骤 1 / 3</div>
+        <div class="coach-title" id="coachTitle">设置离开日期</div>
+        <div class="coach-desc" id="coachDesc">这是整个清售计划的核心时间轴，AI 之后的所有调价节奏都围绕它计算。</div>
+      </div>
+      <button class="coach-skip" type="button" onclick="skipCoach()">跳过引导</button>
+    </div>
+    <div class="coach-nav">
+      <button class="coach-prev" id="coachPrevBtn" type="button" onclick="coachPrev()" style="display:none;">上一步</button>
+      <button class="coach-next" id="coachNextBtn" type="button" onclick="coachNext()">下一步</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="scroll px">
+
+  <div class="card intro-card" style="margin-bottom:16px;">
+    <div class="intro-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="#fff"/></svg></div>
+    <div style="flex:1;">
+      <div style="font-weight:800;font-size:15px;">跟着 AI 一步步创建计划</div>
+      <div style="font-size:12.5px;color:var(--xy-ink-soft);margin-top:5px;line-height:1.6;">本页模拟一次全新的清售计划创建过程。3 步设置完成后即可开始添加商品，后续也可随时回来调整。</div>
+      <a class="intro-skip" onclick="location.href='dashboard.html'">已经很熟悉？直接查看已配置好的计划 ›</a>
+    </div>
+  </div>
+
+  <div class="section-title">离开日期</div>
+  <div class="card step-card coach-target" id="stepCardDate">
+    <span class="step-flag">当前步骤</span>
+    <button class="plan-field-btn" type="button" onclick="openCalendar()">
+      <span style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;">
+        <span style="font-size:11.5px;color:var(--xy-ink-soft);font-weight:600;">点击选择</span>
+        <b id="departureDateLabel">8月23日</b>
+      </span>
+      <span class="plan-field-days" id="daysRemainingChip">14 天后</span>
+    </button>
+    <div style="font-size:11.5px;color:var(--xy-ink-faint);line-height:1.6;margin-top:10px;">AI 会以这个日期为终点，反向规划价格衰减节奏与调价检查频率。</div>
+  </div>
+
+  <div class="section-title">取货偏好</div>
+  <div class="card step-card" id="stepCardPickup">
+    <span class="step-flag">当前步骤</span>
+    <div class="pickup-chip-group" id="pickupGroup">
+      <button class="pickup-chip active" data-k="weekday" type="button" onclick="setPickup('weekday')"><b>工作日晚 19:00–21:00</b><span>与卖家日常作息一致，多数买家可配合</span></button>
+      <button class="pickup-chip" data-k="weekend" type="button" onclick="setPickup('weekend')"><b>周末全天灵活</b><span>集中在周末处理，工作日不被打扰</span></button>
+      <button class="pickup-chip" data-k="negotiate" type="button" onclick="setPickup('negotiate')"><b>提前沟通，临时约定</b><span>不固定时段，每次交易前单独协调</span></button>
+    </div>
+  </div>
+
+  <div class="section-title">自动化范围</div>
+  <div class="card step-card" id="stepCardAuto">
+    <span class="step-flag">当前步骤</span>
+    <div class="auto-row">
+      <div class="auto-copy">
+        <b>开启 AI 自动化</b>
+        <p>AI 将按你接下来设置的底价与策略自动更新公开价、拦截低价报价、发起一次试探性还价。所有关键决策仍需你最终确认，随时可暂停或收回。</p>
+      </div>
+      <div class="toggle on" id="autoToggle" onclick="toggleAuto()"><div class="knob"></div></div>
+    </div>
+  </div>
+
+  <div style="height:8px;"></div>
+
+</div>
+
+<div class="bottombar"><div class="bottombar-inner">
+  <button class="btn btn-primary btn-block" onclick="createPlan()">创建计划，添加第一件商品</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<div id="calendarSheet" class="calendar-sheet" aria-hidden="true">
+  <div class="calendar-backdrop" onclick="closeCalendar()"></div>
+  <section class="calendar-panel" role="dialog" aria-modal="true" aria-label="设置离开日期">
+    <div class="calendar-handle"></div>
+    <div class="calendar-head">
+      <button id="prevMonth" class="calendar-nav" type="button" onclick="changeMonth(-1)" aria-label="上个月">‹</button>
+      <h2 id="calendarMonthLabel">2026年8月</h2>
+      <button class="calendar-nav" type="button" onclick="changeMonth(1)" aria-label="下个月">›</button>
+    </div>
+    <div class="calendar-subtitle">选择你的离开日期，AI 会围绕这一天规划全部商品的价格节奏。</div>
+    <div class="calendar-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+    <div id="calendarGrid" class="calendar-grid"></div>
+    <button class="btn btn-primary btn-block calendar-confirm" type="button" onclick="confirmDepartureDate()">确认日期</button>
+  </section>
+</div>
+
+</div>
+<script>
+// ===== UI helper: toast =====
+let __toastTimer=null;
+function showToast(msg, ms){
+  const el = document.getElementById('toast');
+  if(!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(__toastTimer);
+  __toastTimer = setTimeout(()=>el.classList.remove('show'), ms||2200);
+}
+
+// ===== 离开日期：与 dashboard.html 共用同一套演示基准与 localStorage key =====
+const PLAN_TODAY = new Date(2026, 7, 9);
+const DEFAULT_DEPARTURE = new Date(2026, 7, 23);
+let selectedDeparture = loadSavedDeparture() || new Date(DEFAULT_DEPARTURE);
+let calendarYear = selectedDeparture.getFullYear();
+let calendarMonth = selectedDeparture.getMonth();
+
+function dateKey(date){
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+function loadSavedDeparture(){
+  try{
+    const value = localStorage.getItem('clearoutDepartureDate');
+    if(!value) return null;
+    const [y,m,d] = value.split('-').map(Number);
+    const date = new Date(y, m-1, d);
+    return date > PLAN_TODAY ? date : null;
+  }catch(e){ return null; }
+}
+function formatDate(date){ return `${date.getMonth()+1}月${date.getDate()}日`; }
+function daysUntil(date){
+  const day = 24*60*60*1000;
+  return Math.max(1, Math.round((Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()) - Date.UTC(PLAN_TODAY.getFullYear(),PLAN_TODAY.getMonth(),PLAN_TODAY.getDate())) / day));
+}
+function updateDepartureUI(){
+  document.getElementById('departureDateLabel').textContent = formatDate(selectedDeparture);
+  document.getElementById('daysRemainingChip').textContent = `${daysUntil(selectedDeparture)} 天后`;
+}
+function openCalendar(){
+  calendarYear = selectedDeparture.getFullYear();
+  calendarMonth = selectedDeparture.getMonth();
+  renderCalendar();
+  const sheet = document.getElementById('calendarSheet');
+  sheet.classList.add('open');
+  sheet.setAttribute('aria-hidden','false');
+}
+function closeCalendar(){
+  const sheet = document.getElementById('calendarSheet');
+  sheet.classList.remove('open');
+  sheet.setAttribute('aria-hidden','true');
+}
+function changeMonth(delta){
+  const next = new Date(calendarYear, calendarMonth + delta, 1);
+  if(next < new Date(PLAN_TODAY.getFullYear(), PLAN_TODAY.getMonth(), 1)) return;
+  calendarYear = next.getFullYear();
+  calendarMonth = next.getMonth();
+  renderCalendar();
+}
+function renderCalendar(){
+  document.getElementById('calendarMonthLabel').textContent = `${calendarYear}年${calendarMonth+1}月`;
+  document.getElementById('prevMonth').disabled = calendarYear === PLAN_TODAY.getFullYear() && calendarMonth === PLAN_TODAY.getMonth();
+  const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+  const monthDays = new Date(calendarYear, calendarMonth+1, 0).getDate();
+  const grid = document.getElementById('calendarGrid');
+  grid.innerHTML = '';
+  for(let i=0;i<firstDay;i++) grid.insertAdjacentHTML('beforeend','<span class="calendar-day is-empty"></span>');
+  for(let day=1;day<=monthDays;day++){
+    const date = new Date(calendarYear, calendarMonth, day);
+    const isPast = date <= PLAN_TODAY;
+    const isSelected = dateKey(date) === dateKey(selectedDeparture);
+    const isToday = dateKey(date) === dateKey(PLAN_TODAY);
+    const classes = ['calendar-day'];
+    if(isPast) classes.push('is-past');
+    if(isSelected) classes.push('is-selected');
+    if(isToday) classes.push('is-today');
+    const disabled = isPast ? 'disabled' : '';
+    grid.insertAdjacentHTML('beforeend', `<button class="${classes.join(' ')}" type="button" ${disabled} onclick="pickDeparture(${calendarYear},${calendarMonth},${day})">${day}</button>`);
+  }
+}
+function pickDeparture(year, month, day){
+  selectedDeparture = new Date(year, month, day);
+  renderCalendar();
+}
+function confirmDepartureDate(){
+  try{ localStorage.setItem('clearoutDepartureDate', dateKey(selectedDeparture)); }catch(e){}
+  updateDepartureUI();
+  closeCalendar();
+  showToast(`离开日期已设置为 ${formatDate(selectedDeparture)}`);
+}
+updateDepartureUI();
+
+// ===== 取货偏好 =====
+function setPickup(k){
+  document.querySelectorAll('#pickupGroup .pickup-chip').forEach(b=>b.classList.toggle('active', b.dataset.k===k));
+}
+
+// ===== 自动化开关 =====
+function toggleAuto(){
+  document.getElementById('autoToggle').classList.toggle('on');
+}
+
+// ===== 分步引导（coachmark） =====
+const COACH_STEPS = [
+  { label:'步骤 1 / 3', title:'设置离开日期', desc:'这是整个清售计划的核心时间轴，AI 之后的所有调价节奏都围绕它计算。', target:'stepCardDate' },
+  { label:'步骤 2 / 3', title:'设置取货偏好', desc:'告诉 AI 你方便交接的时间段，后续候选交易会优先按这个偏好与买家沟通。', target:'stepCardPickup' },
+  { label:'步骤 3 / 3', title:'确认自动化范围', desc:'这一层授权可以随时收回；关闭后 AI 立即停止全部自动调价与还价动作。', target:'stepCardAuto' }
+];
+let coachIndex = 0;
+let coachDone = false;
+
+function renderCoachProgress(){
+  const wrap = document.getElementById('coachProgress');
+  wrap.innerHTML = COACH_STEPS.map((_,i)=>`<i class="${i<=coachIndex?'done':''}"></i>`).join('');
+}
+function renderCoachStep(){
+  const step = COACH_STEPS[coachIndex];
+  document.getElementById('coachStepLabel').textContent = step.label;
+  document.getElementById('coachTitle').textContent = step.title;
+  document.getElementById('coachDesc').textContent = step.desc;
+  document.getElementById('coachPrevBtn').style.display = coachIndex===0 ? 'none' : 'block';
+  document.getElementById('coachNextBtn').textContent = coachIndex===COACH_STEPS.length-1 ? '知道了' : '下一步';
+  document.querySelectorAll('.step-card').forEach(el=>el.classList.remove('coach-target'));
+  const targetEl = document.getElementById(step.target);
+  if(targetEl){
+    targetEl.classList.add('coach-target');
+    targetEl.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  renderCoachProgress();
+}
+function coachNext(){
+  if(coachIndex < COACH_STEPS.length-1){ coachIndex++; renderCoachStep(); }
+  else { finishCoach(); }
+}
+function coachPrev(){
+  if(coachIndex>0){ coachIndex--; renderCoachStep(); }
+}
+function finishCoach(){
+  coachDone = true;
+  document.getElementById('coachBar').classList.add('done');
+  document.querySelectorAll('.step-card').forEach(el=>el.classList.remove('coach-target'));
+  showToast('引导已完成，三项设置随时可以在上方修改');
+}
+function skipCoach(){
+  finishCoach();
+}
+renderCoachStep();
+
+// ===== 完成创建，进入商品添加 =====
+function createPlan(){
+  if(!coachDone) finishCoach();
+  showToast('清售计划已创建，进入商品添加…');
+  const mode = new URLSearchParams(location.search).get('mode') === 'demo' ? '?mode=demo' : '';
+  setTimeout(()=>{ location.href = 'item-add.html' + mode; }, 450);
+}
+</script>
+<script src="mode.js"></script>
+</body>
+</html>

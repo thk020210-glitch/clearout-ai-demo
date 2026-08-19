@@ -386,22 +386,35 @@ function roundToTen(v){ return Math.round(v/10)*10; }
 
 const STRATEGY = {
   profit: { label:'收益优先', a_s:0.50, k_s:0.25, kappa_s:0.10, gamma_adj:0.08 },
-  balance:{ label:'平衡出售', a_s:0.20, k_s:0,    kappa_s:0.25, gamma_adj:0    },
-  fast:   { label:'尽快售出', a_s:-0.10,k_s:-0.25, kappa_s:0.35, gamma_adj:-0.06 }
+  balance:{ label:'平衡出售', a_s:0.20, k_s:-0.60, kappa_s:0.25, gamma_adj:0    }, // k_s 调到让 k≈1（线性匀速），呼应 PRD 05 页原文'温和匀速降价'，作为另外两条曲线之间真正的中间态
+  fast:   { label:'尽快售出', a_s:-0.10,k_s:-1.10, kappa_s:0.35, gamma_adj:-0.06 } // k_s 刻意压到让 k 触底(0.65)，配合 calcPbase 的 elapsed 公式，画出'前陡后平'曲线
 };
 const LIQUIDITY = { high:1.90, mid:1.60, low:1.30 };
 
-function calcP0(Mlow, Mhigh, F, strategyKey){
+// 紧迫折扣：离场剩余总天数 T 越短于 14 天的默认基准，起始价越低；
+// T>=14 时不产生折扣（保持与既有验证数据一致）；T<=7 时折扣封顶，避免起始价被压得过低。
+function urgencyFactor(T){
+  return clamp((14 - T) / (14 - 7), 0, 1);
+}
+function calcP0(Mlow, Mhigh, F, strategyKey, T){
   const M = (Mlow+Mhigh)/2, R = Mhigh-Mlow;
   const a_s = STRATEGY[strategyKey].a_s;
-  return Math.round(clamp(M + a_s*R, F, Mhigh));
+  const t = (typeof T === 'number' && T > 0) ? T : 14;
+  const u = urgencyFactor(t);
+  const BETA = 0.35; // 紧迫折扣强度：T=7 时最多再压低约 0.35×R
+  return Math.round(clamp(M + a_s*R - u*BETA*R, F, Mhigh));
 }
 function calcK(strategyKey, liquidityKey){
   return clamp(LIQUIDITY[liquidityKey] + STRATEGY[strategyKey].k_s, 0.65, 2.40);
 }
+// 时间衰减曲线：指数作用在"已经过去的时间比例"上（而不是"剩余时间比例"上）。
+// 这样 k 越大（如收益优先），早期 elapsed^k 越接近 0，价格长期贴着 P0；
+// 只有临近截止（elapsed 接近 1）才会快速下探到 F —— 与 PRD 05 页"长期维持高位，
+// 临近截止才加速降价"的描述一致。k 越小（如尽快售出）则相反：更早开始明显下降。
+// 两端点严格不变：elapsed=0（day1）恒为 P0，elapsed=1（截止日）恒为 F。
 function calcPbase(F, P0, r, T, k){
-  const ratio = T>0 ? clamp(r/T,0,1) : 0;
-  return F + (P0-F) * Math.pow(ratio, k);
+  const elapsed = T>0 ? clamp(1 - (r/T), 0, 1) : 1;
+  return P0 - (P0-F) * Math.pow(elapsed, k);
 }
 function calcQ(fav, offerStrength, supply, lowDensity){
   return clamp(0.30*fav + 0.35*offerStrength - 0.20*supply - 0.15*lowDensity, -1, 1);
@@ -551,7 +564,7 @@ function render(){
   document.getElementById('phaseBadge').textContent = `${phase.label} · 计划第 ${Math.max(1, T-r+1)} 天`;
   document.getElementById('todayCaption').textContent = `今日 · ${phase.short}`;
 
-  const P0 = calcP0(M_LOW, M_HIGH, F, currentStrategy);
+  const P0 = calcP0(M_LOW, M_HIGH, F, currentStrategy, T);
   const k = calcK(currentStrategy, 'mid');
   const Pbase = calcPbase(F, P0, r, T, k);
   const R = M_HIGH - M_LOW;
@@ -602,9 +615,12 @@ function drawChart(F, P0, k, r, Pnext){
   const y = (p)=> padTop + (yMax - p) / (yMax - yMin) * chartH;
 
   let pts = [];
-  const N = 28;
+  // 非均匀取样：越靠近计划开始那几天采样越密。k<1（如尽快售出）的曲线在启动日附近
+  // 瞬时降价速度理论上趋近无穷大，均匀取样在这段会显得有棱角；指数 1.3 让取样点向起点集中，
+  // 对 k>1 的曲线几乎没有影响（那段本就平缓），只是让所有曲线开局都更顺滑。
+  const N = 36;
   for(let i=0;i<=N;i++){
-    const e = (i/N)*T;
+    const e = Math.pow(i/N, 1.3) * T;
     const rem = T - e;
     const p = calcPbase(F, P0, rem, T, k);
     pts.push([x(e), y(p)]);

@@ -315,9 +315,9 @@ a{text-decoration:none;color:inherit;}
     <div class="reference-grid">
       <div class="reference-block">
         <div class="reference-label">市场参考区间</div>
-        <div class="reference-price">¥690</div>
+        <div class="reference-price" id="referencePriceText">¥690</div>
         <div class="reference-detail">建议起售价 · 中等置信度</div>
-        <div class="reference-rail"><span class="reference-marker"></span></div>
+        <div class="reference-rail"><span class="reference-marker" id="refMarkerEl"></span></div>
         <div class="reference-range"><span>¥520</span><span>¥760</span></div>
       </div>
       <div class="reference-block">
@@ -326,7 +326,7 @@ a{text-decoration:none;color:inherit;}
         <div class="reference-detail">参考品类、成色、同城自提条件与近似商品流转速度</div>
       </div>
     </div>
-    <div class="reference-footer"><span>AI 参考用于辅助设置底价；底价始终由你决定。</span><button type="button" onclick="showToast('补充成色、配件或取货条件可更新判断')">查看依据 ›</button></div>
+    <div class="reference-footer"><span>AI 参考用于辅助设置底价；起始价与后续调价完全由 AI 按你选择的策略执行。</span><button type="button" onclick="showToast('补充成色、配件或取货条件可更新判断')">查看依据 ›</button></div>
   </div>
 
   <div class="section-title">定价计划</div>
@@ -379,22 +379,35 @@ function roundToTen(v){ return Math.round(v/10)*10; }
 
 const STRATEGY = {
   profit: { label:'收益优先', a_s:0.50, k_s:0.25, kappa_s:0.10, gamma_adj:0.08 },
-  balance:{ label:'平衡出售', a_s:0.20, k_s:0,    kappa_s:0.25, gamma_adj:0    },
-  fast:   { label:'尽快售出', a_s:-0.10,k_s:-0.25, kappa_s:0.35, gamma_adj:-0.06 }
+  balance:{ label:'平衡出售', a_s:0.20, k_s:-0.60, kappa_s:0.25, gamma_adj:0    }, // k_s 调到让 k≈1（线性匀速），呼应 PRD 05 页原文'温和匀速降价'，作为另外两条曲线之间真正的中间态
+  fast:   { label:'尽快售出', a_s:-0.10,k_s:-1.10, kappa_s:0.35, gamma_adj:-0.06 } // k_s 刻意压到让 k 触底(0.65)，配合 calcPbase 的 elapsed 公式，画出'前陡后平'曲线
 };
 const LIQUIDITY = { high:1.90, mid:1.60, low:1.30 };
 
-function calcP0(Mlow, Mhigh, F, strategyKey){
+// 紧迫折扣：离场剩余总天数 T 越短于 14 天的默认基准，起始价越低；
+// T>=14 时不产生折扣（保持与既有验证数据一致）；T<=7 时折扣封顶，避免起始价被压得过低。
+function urgencyFactor(T){
+  return clamp((14 - T) / (14 - 7), 0, 1);
+}
+function calcP0(Mlow, Mhigh, F, strategyKey, T){
   const M = (Mlow+Mhigh)/2, R = Mhigh-Mlow;
   const a_s = STRATEGY[strategyKey].a_s;
-  return Math.round(clamp(M + a_s*R, F, Mhigh));
+  const t = (typeof T === 'number' && T > 0) ? T : 14;
+  const u = urgencyFactor(t);
+  const BETA = 0.35; // 紧迫折扣强度：T=7 时最多再压低约 0.35×R
+  return Math.round(clamp(M + a_s*R - u*BETA*R, F, Mhigh));
 }
 function calcK(strategyKey, liquidityKey){
   return clamp(LIQUIDITY[liquidityKey] + STRATEGY[strategyKey].k_s, 0.65, 2.40);
 }
+// 时间衰减曲线：指数作用在"已经过去的时间比例"上（而不是"剩余时间比例"上）。
+// 这样 k 越大（如收益优先），早期 elapsed^k 越接近 0，价格长期贴着 P0；
+// 只有临近截止（elapsed 接近 1）才会快速下探到 F —— 与 PRD 05 页"长期维持高位，
+// 临近截止才加速降价"的描述一致。k 越小（如尽快售出）则相反：更早开始明显下降。
+// 两端点严格不变：elapsed=0（day1）恒为 P0，elapsed=1（截止日）恒为 F。
 function calcPbase(F, P0, r, T, k){
-  const ratio = T>0 ? clamp(r/T,0,1) : 0;
-  return F + (P0-F) * Math.pow(ratio, k);
+  const elapsed = T>0 ? clamp(1 - (r/T), 0, 1) : 1;
+  return P0 - (P0-F) * Math.pow(elapsed, k);
 }
 function calcQ(fav, offerStrength, supply, lowDensity){
   return clamp(0.30*fav + 0.35*offerStrength - 0.20*supply - 0.15*lowDensity, -1, 1);
@@ -452,8 +465,9 @@ function decideOffer(B, L, F, Pt){
 
 </script>
 <script>
-const M_HIGH = 760;
+const M_LOW = 520, M_HIGH = 760;
 let currentStrategy = 'balance';
+let currentT = 14;
 
 const STRATEGY_DESC = {
   profit: '前期保持较高价格更久，愿意为更高成交价多等待几天。',
@@ -469,13 +483,26 @@ function loadDeadlineContext(){
     const departure = new Date(y,m-1,d);
     const today = new Date(2026,7,9);
     const days = Math.max(1, Math.round((Date.UTC(y,m-1,d)-Date.UTC(today.getFullYear(),today.getMonth(),today.getDate()))/(24*60*60*1000)));
+    currentT = days;
     document.getElementById('deadlineChip').textContent = `离开：${m}月${d}日 · ${days}天　修改 ›`;
   }catch(e){}
+}
+
+// 根据当前底价 F、策略与剩余天数 T，重新计算并展示 AI 建议起始价（含参考区间内的 marker 位置）。
+// 起始价完全由 AI 决定，此处仅展示，不提供用户调整入口——
+// 用户对价格判断有异议时，走"查看依据 › 补充成色/配件/取货条件"来更新 AI 的输入，而不是绕过 AI 直接改结论。
+function refreshP0(){
+  const F = Number(document.getElementById('fSlider').value);
+  const suggested = roundToTen(calcP0(M_LOW, M_HIGH, F, currentStrategy, currentT));
+  document.getElementById('referencePriceText').textContent = '¥' + suggested;
+  const markerPct = clamp((suggested - M_LOW) / (M_HIGH - M_LOW), 0, 1) * 100;
+  document.getElementById('refMarkerEl').style.left = markerPct + '%';
 }
 
 function onFChange(v){
   document.getElementById('fVal').textContent = '¥'+v;
   document.getElementById('fWarn').style.display = (Number(v) >= M_HIGH) ? 'block' : 'none';
+  refreshP0();
 }
 
 function setStrategy(k){
@@ -484,6 +511,7 @@ function setStrategy(k){
     b.classList.toggle('active', b.dataset.k === k);
   });
   document.getElementById('strategyDesc').textContent = STRATEGY_DESC[k];
+  refreshP0();
 }
 
 function toggleCounter(){
@@ -513,6 +541,7 @@ function saveAndStart(){
 }
 
 loadDeadlineContext();
+refreshP0();
 
 </script>
 <script src="mode.js"></script>

@@ -61,11 +61,10 @@
         <div class="mode-user-panel__row"><span>下次检查</span><b>明日 09:00</b></div>
         <div class="mode-user-panel__row"><span>检查节奏</span><b>每 72 小时一次</b></div>
         <div class="mode-user-panel__note">系统会综合收藏、有效报价和同类供给更新公开价；不会低于你的保护底价。</div>
-        <button class="btn btn-secondary btn-block" onclick="location.href='${withMode('item-setup.html')}'">调整底价或策略</button>
       </div>`);
     const actionRow = document.getElementById('planActions');
     if (actionRow) {
-      actionRow.innerHTML = `<button class="btn pause-plan-btn" style="flex:1;" onclick="showToast('自动调价已暂停：商品保持在售，AI 不再更新公开价或处理自动报价')">暂停自动调价</button><button class="btn btn-secondary" style="flex:1;" onclick="location.href='${withMode('item-setup.html')}'">调整计划</button>`;
+      actionRow.innerHTML = `<button class="btn pause-plan-btn" style="flex:1;" onclick="showToast('自动调价已暂停：商品保持在售，AI 不再更新公开价或处理自动报价')">暂停自动调价</button><button class="btn btn-primary" style="flex:1;" onclick="location.href='${withMode('item-setup.html')}'">调整底价或策略</button>`;
     }
   }
 
@@ -140,7 +139,7 @@
       .mode-inbox-card__actions{display:flex;gap:9px;margin-top:14px}
       .mode-inbox-card__actions .btn{flex:1}
       .mode-user-tip{font-size:11.5px;line-height:1.6;color:#8B857E;padding:8px 2px 18px}
-      @media(max-width:680px){.prototype-mode-toggle{display:none}}
+      @media(max-width:680px){.prototype-mode-toggle{top:auto;bottom:100px;right:16px;padding:9px 13px;font-size:12px;}}
     `;
     document.head.appendChild(style);
   }

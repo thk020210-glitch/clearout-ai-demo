@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>计划已创建 · 闲鱼</title>
+<style>
+:root{
+  --xy-orange:#FF4B10;
+  --xy-orange-deep:#DE3900;
+  --xy-orange-soft:#FFF0EA;
+  --xy-gold:#FFC300;
+  --xy-gold-soft:#FFF7DE;
+  --xy-ink:#1B1B1D;
+  --xy-ink-soft:#63636B;
+  --xy-ink-faint:#A2A2AA;
+  --xy-bg:#F4F3F1;
+  --xy-card:#FFFFFF;
+  --xy-line:#ECEBE8;
+  --xy-green:#0EA972;
+  --xy-warn-bg:#FFF7E8;
+  --r-lg:22px;
+  --r-md:16px;
+  --shadow:0 1px 2px rgba(20,15,10,.04), 0 10px 26px -14px rgba(20,15,10,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;
+  background:var(--xy-bg);
+  color:var(--xy-ink);
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+}
+.device{
+  width:100%;max-width:430px;min-height:100vh;background:var(--xy-bg);
+  position:relative;display:flex;flex-direction:column;
+}
+.statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 22px 4px;font-size:14px;font-weight:600;color:var(--xy-ink);letter-spacing:.2px;}
+.statusbar .icons{display:flex;align-items:center;gap:5px;}
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;position:sticky;top:0;background:var(--xy-bg);z-index:20;}
+.navbar .side{width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.navbar .side.tap{cursor:pointer;border-radius:50%;background:rgba(0,0,0,.04);}
+.navbar .side.tap:active{background:rgba(0,0,0,.09);}
+.navbar h1{font-size:17px;font-weight:700;margin:0;}
+
+.scroll{flex:1;overflow-y:auto;padding-bottom:110px;}
+.px{padding-left:16px;padding-right:16px;}
+
+.card{background:var(--xy-card);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:18px;}
+
+.btn{border:none;border-radius:100px;font-size:15px;font-weight:700;padding:14px 20px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s ease;font-family:inherit;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:linear-gradient(135deg,var(--xy-orange),var(--xy-orange-deep));color:#fff;box-shadow:0 10px 20px -10px rgba(255,75,16,.6);}
+.btn-block{width:100%;}
+
+.bottombar{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;}
+.bottombar-inner{width:100%;max-width:430px;padding:10px 16px calc(18px + env(safe-area-inset-bottom));background:linear-gradient(180deg, rgba(244,243,241,0) 0%, var(--xy-bg) 30%);display:flex;gap:10px;}
+
+.explain{background:var(--xy-warn-bg);border-radius:var(--r-md);padding:14px 16px;font-size:13.5px;line-height:1.65;color:#7A5B00;border:1px solid #FBE7A8;}
+.explain b{color:#5b4200;}
+
+::-webkit-scrollbar{display:none;}
+a{text-decoration:none;color:inherit;}
+
+.success-icon{width:64px;height:64px;margin:0 auto 14px;border-radius:20px;background:linear-gradient(135deg,var(--xy-gold),var(--xy-orange));display:flex;align-items:center;justify-content:center;box-shadow:0 12px 24px -10px rgba(255,120,20,.55);}
+
+.skip-note{text-align:center;font-size:11.5px;color:var(--xy-ink-faint);margin-top:10px;line-height:1.6;}
+
+.recap-row{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--xy-line);font-size:13px;}
+.recap-row:first-child{border-top:0;padding-top:0;}
+.recap-row span{color:var(--xy-ink-soft);}
+.recap-row b{font-weight:800;}
+</style>
+</head>
+<body>
+<div class="device">
+<div class="statusbar">
+  <span>9:41</span>
+  <span class="icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="#1B1B1D"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#1B1B1D"/><rect x="10" y="3" width="3" height="9" rx="0.5" fill="#1B1B1D"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#1B1B1D"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 4C4.5 0.5 11.5 0.5 15 4" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><path d="M3.5 6.8C6 4.3 10 4.3 12.5 6.8" stroke="#1B1B1D" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="10" r="1.4" fill="#1B1B1D"/></svg>
+    <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#1B1B1D"/><rect x="2" y="2" width="15" height="8" rx="1.2" fill="#1B1B1D"/><rect x="21.5" y="4" width="1.8" height="4" rx="0.8" fill="#1B1B1D"/></svg>
+  </span>
+</div>
+<div class="navbar">
+  <div class="side tap" onclick="location.href='item-add.html'"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="#1B1B1D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <h1>计划已创建</h1>
+  <div class="side"></div>
+</div>
+
+<div class="scroll px">
+
+  <div style="text-align:center;padding:22px 10px 8px;">
+    <div class="success-icon">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div style="font-size:20px;font-weight:800;">你的清售计划已创建</div>
+    <div style="font-size:13.5px;color:var(--xy-ink-soft);margin-top:6px;line-height:1.6;">离开日期、取货偏好与第一件商品设置<br>已经生效，AI 即将按规则开始运行</div>
+  </div>
+
+  <div class="card" style="margin-top:18px;">
+    <div class="recap-row"><span>离开日期</span><b id="recapDate">8月23日</b></div>
+    <div class="recap-row"><span>本次设置商品</span><b id="recapItem">1 件</b></div>
+    <div class="recap-row"><span>自动化</span><b>已开启</b></div>
+  </div>
+  <div class="skip-note" id="recapNote" style="margin-top:2px;"></div>
+
+  <div class="explain" style="margin-top:20px;">
+    <b>接下来会看到什么：</b>「我的清售计划」会展示这套系统完整的多商品管理界面——除了刚设置好的这件商品，还包括其他几件已上架商品的状态，以及吉他这件商品已经收到的一笔示例候选报价。这是为了让你完整看到 AI 从「创建计划」到「处理报价」的各个环节，而不是只面对一个还没有任何内容的空计划。
+  </div>
+
+</div>
+
+<div class="bottombar"><div class="bottombar-inner">
+  <button class="btn btn-primary btn-block" onclick="location.href='dashboard.html'">查看我的清售计划</button>
+</div></div>
+
+</div>
+<script>
+function formatDate(date){ return `${date.getMonth()+1}月${date.getDate()}日`; }
+try{
+  const raw = localStorage.getItem('clearoutDepartureDate');
+  if(raw){
+    const [y,m,d] = raw.split('-').map(Number);
+    document.getElementById('recapDate').textContent = formatDate(new Date(y,m-1,d));
+  }
+}catch(e){}
+
+const ITEM_RECAP = {
+  photo: { label:'北欧风书桌台灯（新拍照上传）', note:'这件商品仅用于演示「拍照新建」流程，不计入实际清售商品数量。' },
+  chair: { label:'人体工学办公椅（从已上架商品选取）', note:'这件商品本来就在你的「出售中」列表里，本次只是把它加入了清售计划。' }
+};
+const itemKey = new URLSearchParams(location.search).get('item');
+if(itemKey && ITEM_RECAP[itemKey]){
+  document.getElementById('recapItem').textContent = ITEM_RECAP[itemKey].label;
+  document.getElementById('recapNote').textContent = ITEM_RECAP[itemKey].note;
+}
+</script>
+<script src="mode.js"></script>
+</body>
+</html>
